@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CR-1042 — Campus Resolve</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <a class="brand" href="index.html"
+            ><span class="brand-mark"
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-check" /></svg></span
+            >Campus Resolve</a
+          >
+          <p class="workspace-label">Student workspace</p>
+          <nav aria-label="Student navigation">
+            <a class="side-link" href="dashboard.html"
+              ><svg class="icon"><use href="icons.svg#i-dashboard" /></svg
+              >Dashboard</a
+            ><a class="side-link active" href="complaints.html"
+              ><svg class="icon"><use href="icons.svg#i-doc" /></svg>My
+              Complaints</a
+            ><a class="side-link" href="submit-complaint.html"
+              ><svg class="icon"><use href="icons.svg#i-file-plus" /></svg
+              >Submit Complaint</a
+            ><a class="side-link" href="profile.html"
+              ><svg class="icon"><use href="icons.svg#i-user" /></svg>Profile</a
+            >
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="side-link" href="admin-dashboard.html"
+            ><svg class="icon"><use href="icons.svg#i-settings" /></svg>Switch
+            workspace</a
+          >
+          <div class="sidebar-user">
+            <span class="avatar">AJ</span>
+            <div><strong>Alex Johnson</strong><small>Student</small></div>
+          </div>
+        </div>
+      </aside>
+      <div class="app-body">
+        <header class="app-header">
+          <button
+            class="mobile-menu"
+            data-mobile-nav
+            aria-label="Open navigation"
+          >
+            <svg class="icon"><use href="icons.svg#i-menu" /></svg>
+          </button>
+          <div class="crumb">Campus Resolve <span>/</span> Complaint</div>
+          <div class="header-actions">
+            <button
+              class="icon-button"
+              data-toast="You have one update on CR-1042."
+              aria-label="Notifications"
+            >
+              <svg class="icon"><use href="icons.svg#i-bell" /></svg
+              ><i></i></button
+            ><a class="user-menu" href="profile.html"
+              ><span class="avatar">AJ</span><span>Alex</span></a
+            >
+          </div>
+        </header>
+        <main id="main-content" class="app-main">
+          <section class="detail-page">
+            <a class="back-button" href="complaints.html"
+              ><svg class="icon" width="18" height="18">
+                <use href="icons.svg#i-arrow-left" />
+              </svg>
+              Back to my complaints</a
+            >
+            <div class="detail-hero">
+              <div>
+                <p class="eyebrow">CR-1042</p>
+                <h1>Classroom fan not working</h1>
+                <p>Infrastructure · Block B · Room 204</p>
+              </div>
+              <div class="detail-status">
+                <span class="status in-progress"><i></i>In Progress</span
+                ><small>Last updated Today, 9:20 AM</small>
+              </div>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-main">
+                <section class="panel detail-section">
+                  <h2>Complaint details</h2>
+                  <p class="detail-description">
+                    The ceiling fan nearest the windows has stopped working. The
+                    room becomes uncomfortable during the afternoon lecture.
+                  </p>
+                  <dl>
+                    <div>
+                      <dt>Category</dt>
+                      <dd>Infrastructure</dd>
+                    </div>
+                    <div>
+                      <dt>Location</dt>
+                      <dd>Block B · Room 204</dd>
+                    </div>
+                    <div>
+                      <dt>Submitted</dt>
+                      <dd>Sep 10, 2026</dd>
+                    </div>
+                    <div>
+                      <dt>Last updated</dt>
+                      <dd>Today, 9:20 AM</dd>
+                    </div>
+                  </dl>
+                </section>
+                <section class="panel detail-section">
+                  <h2>Status timeline</h2>
+                  <ol class="timeline">
+                    <li class="complete">
+                      <span>✓</span>
+                      <div>
+                        <strong>Submitted</strong><small>Sep 10, 2026</small>
+                      </div>
+                    </li>
+                    <li class="complete">
+                      <span>✓</span>
+                      <div>
+                        <strong>Reviewed by administration</strong
+                        ><small>Sep 10, 2:15 PM</small>
+                      </div>
+                    </li>
+                    <li class="current">
+                      <span></span>
+                      <div>
+                        <strong>In Progress</strong
+                        ><small>Currently being handled</small>
+                      </div>
+                    </li>
+                    <li>
+                      <span></span>
+                      <div>
+                        <strong>Resolved</strong
+                        ><small>Awaiting completion</small>
+                      </div>
+                    </li>
+                  </ol>
+                </section>
+                <section class="panel detail-section response">
+                  <div>
+                    <span class="response-icon"
+                      ><svg class="icon" width="17" height="17">
+                        <use href="icons.svg#i-check" /></svg
+                    ></span>
+                    <div>
+                      <p class="eyebrow">Administrative response</p>
+                      <h2>Update from the team</h2>
+                    </div>
+                  </div>
+                  <p>
+                    Facilities has scheduled an inspection for today. We will
+                    update this request after the repair visit.
+                  </p>
+                  <small>Campus Resolve team · Today, 9:20 AM</small>
+                </section>
+              </div>
+              <aside class="detail-side">
+                <section class="panel contact-card">
+                  <h3>Need to add context?</h3>
+                  <p>
+                    If details have changed, contact the administration office
+                    with your complaint ID.
+                  </p>
+                  <button
+                    class="text-button"
+                    type="button"
+                    data-toast="Support request prepared for the administration office."
+                  >
+                    Contact support
+                    <svg class="icon" width="18" height="18">
+                      <use href="icons.svg#i-arrow" />
+                    </svg>
+                  </button>
+                </section>
+              </aside>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div
+      class="toast-region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

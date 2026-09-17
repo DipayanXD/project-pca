@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Submit Complaint — Campus Resolve</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <a class="brand" href="index.html"
+            ><span class="brand-mark"
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-check" /></svg></span
+            >Campus Resolve</a
+          >
+          <p class="workspace-label">Student workspace</p>
+          <nav aria-label="Student navigation">
+            <a class="side-link" href="dashboard.html"
+              ><svg class="icon"><use href="icons.svg#i-dashboard" /></svg
+              >Dashboard</a
+            ><a class="side-link" href="complaints.html"
+              ><svg class="icon"><use href="icons.svg#i-doc" /></svg>My
+              Complaints</a
+            ><a class="side-link active" href="submit-complaint.html"
+              ><svg class="icon"><use href="icons.svg#i-file-plus" /></svg
+              >Submit Complaint</a
+            ><a class="side-link" href="profile.html"
+              ><svg class="icon"><use href="icons.svg#i-user" /></svg>Profile</a
+            >
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="side-link" href="admin-dashboard.html"
+            ><svg class="icon"><use href="icons.svg#i-settings" /></svg>Switch
+            workspace</a
+          >
+          <div class="sidebar-user">
+            <span class="avatar">AJ</span>
+            <div><strong>Alex Johnson</strong><small>Student</small></div>
+          </div>
+        </div>
+      </aside>
+      <div class="app-body">
+        <header class="app-header">
+          <button
+            class="mobile-menu"
+            data-mobile-nav
+            aria-label="Open navigation"
+          >
+            <svg class="icon"><use href="icons.svg#i-menu" /></svg>
+          </button>
+          <div class="crumb">
+            Campus Resolve <span>/</span> Submit Complaint
+          </div>
+          <div class="header-actions">
+            <button
+              class="icon-button"
+              data-toast="You have one update on CR-1042."
+              aria-label="Notifications"
+            >
+              <svg class="icon"><use href="icons.svg#i-bell" /></svg
+              ><i></i></button
+            ><a class="user-menu" href="profile.html"
+              ><span class="avatar">AJ</span><span>Alex</span></a
+            >
+          </div>
+        </header>
+        <main id="main-content" class="app-main">
+          <section class="form-page">
+            <div class="page-head">
+              <p class="eyebrow">New complaint</p>
+              <h1>Tell us what needs attention.</h1>
+              <p>Provide a few details so the right campus team can help.</p>
+            </div>
+            <form
+              class="complaint-form panel"
+              data-validate
+              data-redirect="complaint-details.html"
+              novalidate
+            >
+              <div class="form-alert" hidden role="alert"></div>
+              <div class="form-grid">
+                <label class="field full"
+                  ><span>Complaint title</span
+                  ><input
+                    name="title"
+                    placeholder="e.g. Classroom fan not working"
+                    required /><small class="error"></small></label
+                ><label class="field"
+                  ><span>Category</span
+                  ><select name="category" required>
+                    <option value="">Select a category</option>
+                    <option>Infrastructure</option>
+                    <option>IT</option>
+                    <option>Facilities</option>
+                    <option>Laboratory</option>
+                    <option>Other</option></select
+                  ><small class="error"></small></label
+                ><label class="field"
+                  ><span>Location / department</span
+                  ><input
+                    name="location"
+                    placeholder="e.g. Block B · Room 204"
+                    required /><small class="error"></small></label
+                ><label class="field full"
+                  ><span>Description</span
+                  ><textarea
+                    name="description"
+                    placeholder="What happened? Include anything that would help the team understand the issue."
+                    required
+                  ></textarea
+                  ><small class="error"></small></label
+                ><label class="attachment full"
+                  ><input type="file" aria-label="Add attachment" /><span
+                    ><svg class="icon" width="20" height="20">
+                      <use href="icons.svg#i-paperclip" /></svg
+                  ></span>
+                  <div>
+                    <strong>Add an attachment</strong
+                    ><small>Optional · PDF, JPG, or PNG up to 10 MB</small>
+                  </div>
+                  <em>Browse</em></label
+                >
+              </div>
+              <div class="form-actions">
+                <button
+                  class="button secondary"
+                  type="button"
+                  data-toast="Draft saved on this device."
+                >
+                  Save as draft</button
+                ><button class="button primary" type="submit">
+                  Submit complaint
+                  <svg class="icon" width="18" height="18">
+                    <use href="icons.svg#i-arrow" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div
+      class="toast-region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

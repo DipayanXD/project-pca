@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Profile — Campus Resolve</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <a class="brand" href="index.html"
+            ><span class="brand-mark"
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-check" /></svg></span
+            >Campus Resolve</a
+          >
+          <p class="workspace-label">Admin workspace</p>
+          <nav aria-label="Administrator navigation">
+            <a class="side-link" href="admin-dashboard.html"
+              ><svg class="icon"><use href="icons.svg#i-dashboard" /></svg
+              >Dashboard</a
+            ><a class="side-link" href="admin-complaints.html"
+              ><svg class="icon"><use href="icons.svg#i-doc" /></svg>All
+              Complaints</a
+            ><a class="side-link" href="users.html"
+              ><svg class="icon"><use href="icons.svg#i-users" /></svg>Users</a
+            ><a class="side-link active" href="admin-profile.html"
+              ><svg class="icon"><use href="icons.svg#i-user" /></svg>Profile</a
+            >
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="side-link" href="dashboard.html"
+            ><svg class="icon"><use href="icons.svg#i-settings" /></svg>Switch
+            workspace</a
+          >
+          <div class="sidebar-user">
+            <span class="avatar">PS</span>
+            <div><strong>Priya Sharma</strong><small>Administrator</small></div>
+          </div>
+        </div>
+      </aside>
+      <div class="app-body">
+        <header class="app-header">
+          <button
+            class="mobile-menu"
+            data-mobile-nav
+            aria-label="Open navigation"
+          >
+            <svg class="icon"><use href="icons.svg#i-menu" /></svg>
+          </button>
+          <div class="crumb">Campus Resolve <span>/</span> Profile</div>
+          <div class="header-actions">
+            <button
+              class="icon-button"
+              data-toast="You have three complaints awaiting review."
+              aria-label="Notifications"
+            >
+              <svg class="icon"><use href="icons.svg#i-bell" /></svg
+              ><i></i></button
+            ><a class="user-menu" href="admin-profile.html"
+              ><span class="avatar">PS</span><span>Priya</span></a
+            >
+          </div>
+        </header>
+        <main id="main-content" class="app-main">
+          <section class="page-head">
+            <p class="eyebrow">Account</p>
+            <h1>Your profile</h1>
+            <p>Keep your Campus Resolve account information current.</p>
+          </section>
+          <section class="profile-layout">
+            <div class="panel profile-card">
+              <span class="avatar profile-avatar">PS</span>
+              <h2>Priya Sharma</h2>
+              <p>priya.sharma@campus.edu</p>
+              <span class="role-chip">Administrator</span>
+              <hr />
+              <dl>
+                <div>
+                  <dt>Member since</dt>
+                  <dd>July 2026</dd>
+                </div>
+                <div>
+                  <dt>Account status</dt>
+                  <dd><span class="account-active">Active</span></dd>
+                </div>
+              </dl>
+            </div>
+            <form class="panel profile-form" data-validate novalidate>
+              <div class="panel-head">
+                <div>
+                  <h2>Personal information</h2>
+                  <p>Used only to identify your account.</p>
+                </div>
+              </div>
+              <label class="field"
+                ><span>Full name</span
+                ><input name="name" value="Priya Sharma" required /><small
+                  class="error"
+                ></small></label
+              ><label class="field"
+                ><span>Email address</span
+                ><input
+                  name="email"
+                  type="email"
+                  value="priya.sharma@campus.edu"
+                  required /><small class="error"></small
+              ></label>
+              <div class="form-actions">
+                <button class="button primary" type="submit">
+                  Save changes
+                </button>
+              </div>
+            </form>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div
+      class="toast-region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

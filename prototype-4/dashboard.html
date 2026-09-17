@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard — Campus Resolve</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <!-- PHP include: includes/student-sidebar.php -->
+      <aside class="sidebar">
+        <div>
+          <a class="brand" href="index.html"
+            ><span class="brand-mark"
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-check" /></svg></span
+            >Campus Resolve</a
+          >
+          <p class="workspace-label">Student workspace</p>
+          <nav aria-label="Student navigation">
+            <a class="side-link active" href="dashboard.html"
+              ><svg class="icon"><use href="icons.svg#i-dashboard" /></svg
+              >Dashboard</a
+            ><a class="side-link" href="complaints.html"
+              ><svg class="icon"><use href="icons.svg#i-doc" /></svg>My
+              Complaints</a
+            ><a class="side-link" href="submit-complaint.html"
+              ><svg class="icon"><use href="icons.svg#i-file-plus" /></svg
+              >Submit Complaint</a
+            ><a class="side-link" href="profile.html"
+              ><svg class="icon"><use href="icons.svg#i-user" /></svg>Profile</a
+            >
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="side-link" href="admin-dashboard.html"
+            ><svg class="icon"><use href="icons.svg#i-settings" /></svg>Switch
+            workspace</a
+          >
+          <div class="sidebar-user">
+            <span class="avatar">AJ</span>
+            <div><strong>Alex Johnson</strong><small>Student</small></div>
+            <button
+              type="button"
+              data-toast="Profile menu is available in the full build."
+              aria-label="Open profile menu"
+            >
+              <svg class="icon"><use href="icons.svg#i-more" /></svg>
+            </button>
+          </div>
+        </div>
+      </aside>
+      <div class="app-body">
+        <header class="app-header">
+          <button
+            class="mobile-menu"
+            data-mobile-nav
+            aria-label="Open navigation"
+          >
+            <svg class="icon"><use href="icons.svg#i-menu" /></svg>
+          </button>
+          <div class="crumb">Campus Resolve <span>/</span> Dashboard</div>
+          <div class="header-actions">
+            <button
+              class="icon-button"
+              data-toast="You have one update on CR-1042."
+              aria-label="Notifications"
+            >
+              <svg class="icon"><use href="icons.svg#i-bell" /></svg
+              ><i></i></button
+            ><a class="user-menu" href="profile.html"
+              ><span class="avatar">AJ</span><span>Alex</span
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-chevron" /></svg
+            ></a>
+          </div>
+        </header>
+        <main id="main-content" class="app-main">
+          <section class="page-head dashboard-head">
+            <div>
+              <p class="eyebrow">Your workspace</p>
+              <h1>Good morning, Alex.</h1>
+              <p>Here’s what’s happening with your complaints.</p>
+            </div>
+            <a class="button primary" href="submit-complaint.html"
+              ><svg class="icon"><use href="icons.svg#i-plus" /></svg>New
+              complaint</a
+            >
+          </section>
+          <section class="stats-grid">
+            <article class="stat-card">
+              <div>
+                <p>Total complaints</p>
+                <strong>11</strong><span>All submitted</span>
+              </div>
+              <span class="stat-icon total"
+                ><svg class="icon"><use href="icons.svg#i-doc" /></svg
+              ></span>
+            </article>
+            <article class="stat-card">
+              <div>
+                <p>Pending</p>
+                <strong>1</strong><span>Awaiting review</span>
+              </div>
+              <span class="stat-icon pending"
+                ><svg class="icon"><use href="icons.svg#i-settings" /></svg
+              ></span>
+            </article>
+            <article class="stat-card">
+              <div>
+                <p>In progress</p>
+                <strong>2</strong><span>Being handled</span>
+              </div>
+              <span class="stat-icon progress"
+                ><svg class="icon"><use href="icons.svg#i-settings" /></svg
+              ></span>
+            </article>
+            <article class="stat-card">
+              <div>
+                <p>Resolved</p>
+                <strong>8</strong><span>72% complete</span>
+              </div>
+              <span class="stat-icon resolved"
+                ><svg class="icon"><use href="icons.svg#i-check" /></svg
+              ></span>
+            </article>
+          </section>
+          <section class="content-grid">
+            <div class="panel recent-panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Recent complaints</h2>
+                  <p>Your latest updates, all in one place.</p>
+                </div>
+                <a class="text-button" href="complaints.html"
+                  >View all
+                  <svg class="icon" width="18" height="18">
+                    <use href="icons.svg#i-arrow" /></svg
+                ></a>
+              </div>
+              <div class="responsive-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Complaint</th>
+                      <th>Category</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th><span class="sr-only">Action</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td data-label="ID">
+                        <a class="id-link" href="complaint-details.html"
+                          >CR-1042</a
+                        >
+                      </td>
+                      <td data-label="Complaint">
+                        <strong>Classroom fan not working</strong
+                        ><small>Block B · Room 204</small>
+                      </td>
+                      <td data-label="Category">Infrastructure</td>
+                      <td data-label="Date">Sep 10</td>
+                      <td data-label="Status">
+                        <span class="status in-progress"
+                          ><i></i>In Progress</span
+                        >
+                      </td>
+                      <td>
+                        <a class="view-link" href="complaint-details.html"
+                          >View
+                          <svg class="icon" width="15" height="15">
+                            <use href="icons.svg#i-arrow" /></svg
+                        ></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td data-label="ID">
+                        <a class="id-link" href="complaint-details.html"
+                          >CR-1038</a
+                        >
+                      </td>
+                      <td data-label="Complaint">
+                        <strong>Library computer issue</strong
+                        ><small>Central Library · Workstation 12</small>
+                      </td>
+                      <td data-label="Category">IT</td>
+                      <td data-label="Date">Sep 8</td>
+                      <td data-label="Status">
+                        <span class="status resolved"><i></i>Resolved</span>
+                      </td>
+                      <td>
+                        <a class="view-link" href="complaint-details.html"
+                          >View
+                          <svg class="icon" width="15" height="15">
+                            <use href="icons.svg#i-arrow" /></svg
+                        ></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td data-label="ID">
+                        <a class="id-link" href="complaint-details.html"
+                          >CR-1031</a
+                        >
+                      </td>
+                      <td data-label="Complaint">
+                        <strong>Drinking water problem</strong
+                        ><small>Block A · Ground floor</small>
+                      </td>
+                      <td data-label="Category">Facilities</td>
+                      <td data-label="Date">Sep 6</td>
+                      <td data-label="Status">
+                        <span class="status pending"><i></i>Pending</span>
+                      </td>
+                      <td>
+                        <a class="view-link" href="complaint-details.html"
+                          >View
+                          <svg class="icon" width="15" height="15">
+                            <use href="icons.svg#i-arrow" /></svg
+                        ></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <aside class="help-card">
+              <div class="help-icon">
+                <svg class="icon" width="24" height="24">
+                  <use href="icons.svg#i-file-plus" />
+                </svg>
+              </div>
+              <h2>Need to report something?</h2>
+              <p>
+                Share the details and your campus team can take it from there.
+              </p>
+              <a class="button" href="submit-complaint.html"
+                >Submit a complaint</a
+              >
+            </aside>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div
+      class="toast-region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+    <script src="mock-data.js"></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

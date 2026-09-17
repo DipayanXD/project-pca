@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>User Management — Campus Resolve</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <a class="brand" href="index.html"
+            ><span class="brand-mark"
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-check" /></svg></span
+            >Campus Resolve</a
+          >
+          <p class="workspace-label">Admin workspace</p>
+          <nav aria-label="Administrator navigation">
+            <a class="side-link" href="admin-dashboard.html"
+              ><svg class="icon">
+                <use href="icons.svg#i-dashboard" /></svg
+              >Dashboard</a
+            ><a class="side-link" href="admin-complaints.html"
+              ><svg class="icon">
+                <use href="icons.svg#i-doc" /></svg
+              >All Complaints</a
+            ><a class="side-link active" href="users.html"
+              ><svg class="icon">
+                <use href="icons.svg#i-users" /></svg
+              >Users</a
+            ><a class="side-link" href="admin-profile.html"
+              ><svg class="icon">
+                <use href="icons.svg#i-user" /></svg
+              >Profile</a
+            >
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="side-link" href="dashboard.html"
+            ><svg class="icon">
+              <use href="icons.svg#i-settings" /></svg
+            >Switch workspace</a
+          >
+          <div class="sidebar-user">
+            <span class="avatar">PS</span>
+            <div><strong>Priya Sharma</strong><small>Administrator</small></div>
+          </div>
+        </div>
+      </aside>
+      <div class="app-body">
+        <header class="app-header">
+          <button
+            class="mobile-menu"
+            data-mobile-nav
+            aria-label="Open navigation"
+          >
+            <svg class="icon">
+              <use href="icons.svg#i-menu" />
+            </svg>
+          </button>
+          <div class="crumb">Campus Resolve <span>/</span> User Management</div>
+          <div class="header-actions">
+            <button
+              class="icon-button"
+              data-toast="You have three complaints awaiting review."
+              aria-label="Notifications"
+            >
+              <svg class="icon">
+                <use href="icons.svg#i-bell" /></svg
+              ><i></i></button
+            ><a class="user-menu" href="admin-profile.html"
+              ><span class="avatar">PS</span><span>Priya</span></a
+            >
+          </div>
+        </header>
+        <main id="main-content" class="app-main">
+          <section class="page-head list-head">
+            <div>
+              <p class="eyebrow">Account directory</p>
+              <h1>User management</h1>
+              <p>View registered students and campus administrators.</p>
+            </div>
+            <button
+              class="button primary"
+              type="button"
+              data-toast="User invitation flow is ready for backend integration."
+            >
+              <svg class="icon">
+                <use href="icons.svg#i-plus" /></svg
+              >Add user
+            </button>
+          </section>
+          <section class="panel table-panel">
+            <div class="table-controls">
+              <label class="search-input"
+                ><svg class="icon">
+                  <use href="icons.svg#i-search" /></svg
+                ><input
+                  id="user-search"
+                  placeholder="Search name or email"
+                  aria-label="Search users"
+              /></label>
+              <div class="filter-row">
+                <select id="user-role" aria-label="Filter users">
+                  <option value="">All roles</option>
+                  <option>Student</option>
+                  <option>Administrator</option>
+                </select>
+              </div>
+            </div>
+            <div class="responsive-table">
+              <table id="user-table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Registered</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-role="Student">
+                    <td data-label="User ID">ST-2016</td>
+                    <td data-label="Name"><strong>Alex Johnson</strong></td>
+                    <td data-label="Email">alex.johnson@campus.edu</td>
+                    <td data-label="Role">Student</td>
+                    <td data-label="Registered">Aug 12, 2026</td>
+                    <td data-label="Status">
+                      <span class="account-active">Active</span>
+                    </td>
+                  </tr>
+                  <tr data-role="Student">
+                    <td data-label="User ID">ST-2017</td>
+                    <td data-label="Name"><strong>Maya Patel</strong></td>
+                    <td data-label="Email">maya.patel@campus.edu</td>
+                    <td data-label="Role">Student</td>
+                    <td data-label="Registered">Aug 14, 2026</td>
+                    <td data-label="Status">
+                      <span class="account-active">Active</span>
+                    </td>
+                  </tr>
+                  <tr data-role="Student">
+                    <td data-label="User ID">ST-2018</td>
+                    <td data-label="Name"><strong>Rohan Mehta</strong></td>
+                    <td data-label="Email">rohan.mehta@campus.edu</td>
+                    <td data-label="Role">Student</td>
+                    <td data-label="Registered">Aug 14, 2026</td>
+                    <td data-label="Status">
+                      <span class="account-active">Active</span>
+                    </td>
+                  </tr>
+                  <tr data-role="Administrator">
+                    <td data-label="User ID">AD-001</td>
+                    <td data-label="Name"><strong>Priya Sharma</strong></td>
+                    <td data-label="Email">priya.sharma@campus.edu</td>
+                    <td data-label="Role">Administrator</td>
+                    <td data-label="Registered">Jul 28, 2026</td>
+                    <td data-label="Status">
+                      <span class="account-active">Active</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div
+      class="toast-region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

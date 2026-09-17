@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My Complaints — Campus Resolve</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <a class="brand" href="index.html"
+            ><span class="brand-mark"
+              ><svg class="icon" width="15" height="15">
+                <use href="icons.svg#i-check" /></svg></span
+            >Campus Resolve</a
+          >
+          <p class="workspace-label">Student workspace</p>
+          <nav aria-label="Student navigation">
+            <a class="side-link" href="dashboard.html"
+              ><svg class="icon"><use href="icons.svg#i-dashboard" /></svg
+              >Dashboard</a
+            ><a class="side-link active" href="complaints.html"
+              ><svg class="icon"><use href="icons.svg#i-doc" /></svg>My
+              Complaints</a
+            ><a class="side-link" href="submit-complaint.html"
+              ><svg class="icon"><use href="icons.svg#i-file-plus" /></svg
+              >Submit Complaint</a
+            ><a class="side-link" href="profile.html"
+              ><svg class="icon"><use href="icons.svg#i-user" /></svg>Profile</a
+            >
+          </nav>
+        </div>
+        <div class="sidebar-bottom">
+          <a class="side-link" href="admin-dashboard.html"
+            ><svg class="icon"><use href="icons.svg#i-settings" /></svg>Switch
+            workspace</a
+          >
+          <div class="sidebar-user">
+            <span class="avatar">AJ</span>
+            <div><strong>Alex Johnson</strong><small>Student</small></div>
+          </div>
+        </div>
+      </aside>
+      <div class="app-body">
+        <header class="app-header">
+          <button
+            class="mobile-menu"
+            data-mobile-nav
+            aria-label="Open navigation"
+          >
+            <svg class="icon"><use href="icons.svg#i-menu" /></svg>
+          </button>
+          <div class="crumb">Campus Resolve <span>/</span> My Complaints</div>
+          <div class="header-actions">
+            <button
+              class="icon-button"
+              data-toast="You have one update on CR-1042."
+              aria-label="Notifications"
+            >
+              <svg class="icon"><use href="icons.svg#i-bell" /></svg
+              ><i></i></button
+            ><a class="user-menu" href="profile.html"
+              ><span class="avatar">AJ</span><span>Alex</span></a
+            >
+          </div>
+        </header>
+        <main id="main-content" class="app-main">
+          <section class="page-head list-head">
+            <div>
+              <p class="eyebrow">Your complaint history</p>
+              <h1>My Complaints</h1>
+              <p>Search, filter, and follow every concern you have raised.</p>
+            </div>
+            <a class="button primary" href="submit-complaint.html"
+              ><svg class="icon"><use href="icons.svg#i-plus" /></svg>New
+              complaint</a
+            >
+          </section>
+          <section class="panel table-panel">
+            <div class="table-controls">
+              <label class="search-input"
+                ><svg class="icon"><use href="icons.svg#i-search" /></svg
+                ><input
+                  id="complaint-search"
+                  placeholder="Search by title or ID"
+                  aria-label="Search complaints"
+              /></label>
+              <div class="filter-row">
+                <select
+                  data-complaint-filter="status"
+                  aria-label="Filter by status"
+                >
+                  <option value="">All statuses</option>
+                  <option>Pending</option>
+                  <option>In Progress</option>
+                  <option>Resolved</option></select
+                ><select
+                  data-complaint-filter="category"
+                  aria-label="Filter by category"
+                >
+                  <option value="">All categories</option>
+                  <option>Infrastructure</option>
+                  <option>IT</option>
+                  <option>Facilities</option></select
+                ><select data-complaint-sort aria-label="Sort complaints">
+                  <option value="new">Newest first</option>
+                  <option value="old">Oldest first</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+            </div>
+            <div class="loading-line is-hidden" aria-hidden="true"></div>
+            <div class="responsive-table">
+              <table id="complaint-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Complaint</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th><span class="sr-only">Action</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    data-status="In Progress"
+                    data-category="Infrastructure"
+                    data-date="1042"
+                  >
+                    <td data-label="ID">
+                      <a class="id-link" href="complaint-details.html"
+                        >CR-1042</a
+                      >
+                    </td>
+                    <td data-label="Complaint">
+                      <strong>Classroom fan not working</strong
+                      ><small>Block B · Room 204</small>
+                    </td>
+                    <td data-label="Category">Infrastructure</td>
+                    <td data-label="Date">Sep 10</td>
+                    <td data-label="Status">
+                      <span class="status in-progress"><i></i>In Progress</span>
+                    </td>
+                    <td>
+                      <a class="view-link" href="complaint-details.html"
+                        >View
+                        <svg class="icon" width="15" height="15">
+                          <use href="icons.svg#i-arrow" /></svg
+                      ></a>
+                    </td>
+                  </tr>
+                  <tr
+                    data-status="Resolved"
+                    data-category="IT"
+                    data-date="1038"
+                  >
+                    <td data-label="ID">
+                      <a class="id-link" href="complaint-details.html"
+                        >CR-1038</a
+                      >
+                    </td>
+                    <td data-label="Complaint">
+                      <strong>Library computer issue</strong
+                      ><small>Central Library · Workstation 12</small>
+                    </td>
+                    <td data-label="Category">IT</td>
+                    <td data-label="Date">Sep 8</td>
+                    <td data-label="Status">
+                      <span class="status resolved"><i></i>Resolved</span>
+                    </td>
+                    <td>
+                      <a class="view-link" href="complaint-details.html"
+                        >View
+                        <svg class="icon" width="15" height="15">
+                          <use href="icons.svg#i-arrow" /></svg
+                      ></a>
+                    </td>
+                  </tr>
+                  <tr
+                    data-status="Pending"
+                    data-category="Facilities"
+                    data-date="1031"
+                  >
+                    <td data-label="ID">
+                      <a class="id-link" href="complaint-details.html"
+                        >CR-1031</a
+                      >
+                    </td>
+                    <td data-label="Complaint">
+                      <strong>Drinking water problem</strong
+                      ><small>Block A · Ground floor</small>
+                    </td>
+                    <td data-label="Category">Facilities</td>
+                    <td data-label="Date">Sep 6</td>
+                    <td data-label="Status">
+                      <span class="status pending"><i></i>Pending</span>
+                    </td>
+                    <td>
+                      <a class="view-link" href="complaint-details.html"
+                        >View
+                        <svg class="icon" width="15" height="15">
+                          <use href="icons.svg#i-arrow" /></svg
+                      ></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-empty is-hidden" id="complaint-empty">
+              <svg class="icon" width="28" height="28">
+                <use href="icons.svg#i-search" />
+              </svg>
+              <h3>No matching complaints</h3>
+              <p>Try another search term or clear a filter.</p>
+              <button class="button secondary" data-clear-filters>
+                Clear filters
+              </button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div
+      class="toast-region"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></div>
+    <script src="mock-data.js"></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
