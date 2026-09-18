@@ -7,13 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </defs></svg>`;
   document.body.insertAdjacentHTML("afterbegin", iconSprite);
   document
-    .querySelectorAll('use[href^="icons.svg#"]')
-    .forEach((use) =>
-      use.setAttribute(
-        "href",
-        use.getAttribute("href").replace("icons.svg", ""),
-      ),
-    );
+    .querySelectorAll('use[href*="icons.svg#"]')
+    .forEach((use) => {
+      const parts = use.getAttribute("href").split("#");
+      if (parts[1]) use.setAttribute("href", "#" + parts[1]);
+    });
   const icon = (name, size = 15) =>
     `<svg class="icon" width="${size}" height="${size}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
   const toastRegion = document.querySelector(".toast-region");
@@ -33,6 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
       window.setTimeout(() => notice.remove(), 220);
     }, 3600);
   };
+  window.toast = toast;
+  window.showToast = toast;
 
   document
     .querySelectorAll("[data-toast]")
@@ -60,9 +60,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }),
   );
 
+  const regPassword = document.getElementById("register-password");
+  const strengthContainer = document.getElementById("password-strength-container");
+  const strengthLabel = document.getElementById("strength-label");
+
+  if (regPassword && strengthContainer) {
+    const updateStrength = () => {
+      const val = regPassword.value;
+      if (!val) {
+        strengthContainer.removeAttribute("data-score");
+        if (strengthLabel) {
+          strengthLabel.textContent = "";
+          strengthLabel.className = "strength-label";
+        }
+        return;
+      }
+
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val) && /[a-z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      if (score === 0 && val.length > 0) score = 1;
+
+      strengthContainer.setAttribute("data-score", String(score));
+
+      if (strengthLabel) {
+        const levels = [
+          { text: "", class: "" },
+          { text: "Weak", class: "weak" },
+          { text: "Fair", class: "fair" },
+          { text: "Good", class: "good" },
+          { text: "Strong", class: "strong" },
+        ];
+        const current = levels[score] || levels[0];
+        strengthLabel.textContent = current.text ? `· ${current.text}` : "";
+        strengthLabel.className = `strength-label ${current.class}`;
+      }
+    };
+
+    regPassword.addEventListener("input", updateStrength);
+    if (regPassword.value) updateStrength();
+  }
+
+  document
+    .querySelectorAll(
+      "form[data-validate] input, form[data-validate] select, form[data-validate] textarea",
+    )
+    .forEach((field) => {
+      const clearError = () => {
+        const error = field.closest(".field")?.querySelector(".error");
+        if (error && field.value.trim()) {
+          error.textContent = "";
+          field.removeAttribute("aria-invalid");
+        }
+      };
+      field.addEventListener("input", clearError);
+      field.addEventListener("change", clearError);
+    });
+
   document.querySelectorAll("form[data-validate]").forEach((form) =>
     form.addEventListener("submit", (event) => {
-      event.preventDefault();
       let valid = true;
       form.querySelectorAll("[required]").forEach((input) => {
         const error = input.closest(".field")?.querySelector(".error");
@@ -79,9 +137,13 @@ document.addEventListener("DOMContentLoaded", () => {
         input.toggleAttribute("aria-invalid", Boolean(message));
         if (message) valid = false;
       });
-      if (!valid) return;
+      if (!valid) {
+        event.preventDefault();
+        return;
+      }
       const target = form.dataset.redirect;
       if (target) {
+        event.preventDefault();
         toast(
           form.closest(".auth-card")
             ? "Your account is ready."
@@ -91,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.setTimeout(() => {
           window.location.href = target;
         }, 350);
-      } else toast("Profile updated.", "success");
+      }
     }),
   );
 
