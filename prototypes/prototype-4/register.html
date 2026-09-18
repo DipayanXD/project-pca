@@ -35,7 +35,7 @@
             ><input
               name="name"
               type="text"
-              placeholder="e.g. Alex Johnson"
+              placeholder="Enter your full name"
               autocomplete="name"
               required /><small class="error"></small></label
           ><label class="field"
@@ -43,9 +43,23 @@
             ><input
               name="email"
               type="email"
-              placeholder="you@campus.edu"
+              placeholder="name@campus.edu"
               autocomplete="email"
               required /><small class="error"></small></label
+          ><label class="field"
+            ><span>Department</span
+            ><select name="department" required>
+              <option value="" disabled selected>Select your department</option>
+              <option value="Computer Application">Computer Application</option>
+              <option value="Computer Science &amp; Engineering">Computer Science &amp; Engineering</option>
+              <option value="Information Technology">Information Technology</option>
+              <option value="Electrical Engineering">Electrical Engineering</option>
+              <option value="Mechanical Engineering">Mechanical Engineering</option>
+              <option value="Civil Engineering">Civil Engineering</option>
+              <option value="Business Administration">Business Administration</option>
+              <option value="Science &amp; Humanities">Science &amp; Humanities</option>
+              <option value="Other">Other</option>
+            </select><small class="error"></small></label
           ><label class="field"
             ><span>Password</span
             ><span class="password-wrap"
@@ -53,6 +67,8 @@
                 id="register-password"
                 name="password"
                 type="password"
+                placeholder="Create a password (min. 8 characters)"
+                autocomplete="new-password"
                 required /><button
                 type="button"
                 class="password-toggle"
@@ -70,6 +86,8 @@
                 id="confirm-password"
                 name="confirmPassword"
                 type="password"
+                placeholder="Re-enter your password"
+                autocomplete="new-password"
                 required /><button
                 type="button"
                 class="password-toggle"
@@ -81,8 +99,8 @@
                 </svg></button></span
             ><small class="error"></small
           ></label>
-          <div class="strength">
-            <span>Password strength</span>
+          <div class="strength" id="password-strength-container" aria-live="polite">
+            <span>Password strength <strong class="strength-label" id="strength-label"></strong></span>
             <div><i></i><i></i><i></i><i></i></div>
           </div>
           <button class="button primary full" type="submit">

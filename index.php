@@ -1,29 +1,45 @@
+<?php
+/**
+ * Campus Resolve - Public Landing Page
+ */
+declare(strict_types=1);
+
+require_once __DIR__ . '../includes/auth.php';
+require_once __DIR__ . '../includes/helpers.php';
+
+$loggedIn = is_logged_in();
+$user = current_user();
+$dashboardUrl = is_admin() ? 'admin/dashboard.php' : 'student/dashboard.php';
+?>
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta
-    name="description"
-    content="Campus Resolve — Student Complaint Management System" />
+  <meta name="description" content="Campus Resolve — Student Complaint Management System" />
   <title>Campus Resolve — Student Complaint Management</title>
-  <link rel="stylesheet" href="assets\css\styles.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
-
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
-  <!-- PHP include: includes/public-header.php -->
   <header class="public-nav">
     <div class="nav-inner">
-      <a class="brand" href="index.html"><span class="brand-mark"><svg class="icon" width="15" height="15">
-            <use href="icons.svg#i-check" />
-          </svg></span>Campus Resolve</a>
+      <a class="brand" href="index.php">
+        <span class="brand-mark"><svg class="icon" width="15" height="15"><use href="icons.svg#i-check" /></svg></span>Campus Resolve
+      </a>
       <nav aria-label="Primary">
-        <a href="#how">How it works</a><a href="#tracking">Tracking</a><a href="#experience">The experience</a>
+        <a href="#how">How it works</a>
+        <a href="#tracking">Tracking</a>
+        <a href="#experience">The experience</a>
       </nav>
       <div class="nav-actions">
-        <a class="button secondary small" href="login.html">Sign in</a><a class="button primary small" href="register.html">Get started</a>
+        <?php if ($loggedIn): ?>
+          <a class="button secondary small" href="<?= e($dashboardUrl) ?>">Go to Workspace</a>
+          <a class="button primary small" href="auth/logout.php">Sign out</a>
+        <?php else: ?>
+          <a class="button secondary small" href="auth/login.php">Sign in</a>
+          <a class="button primary small" href="auth/register.php">Get started</a>
+        <?php endif; ?>
       </div>
     </div>
   </header>
@@ -38,10 +54,19 @@
           next.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="register.html">Submit a complaint
-            <svg class="icon" width="18" height="18">
-              <use href="icons.svg#i-arrow" />
-            </svg></a><a class="button secondary" href="login.html">Sign in</a>
+          <?php if ($loggedIn): ?>
+            <a class="button primary" href="<?= is_admin() ? 'admin/complaints/list.php' : 'student/submit_complaint.php' ?>">
+              <?= is_admin() ? 'Manage complaints' : 'Submit a complaint' ?>
+              <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
+            </a>
+            <a class="button secondary" href="<?= e($dashboardUrl) ?>">Open Workspace</a>
+          <?php else: ?>
+            <a class="button primary" href="auth/register.php">
+              Submit a complaint
+              <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
+            </a>
+            <a class="button secondary" href="auth/login.php">Sign in</a>
+          <?php endif; ?>
         </div>
         <p class="quiet-note">Clear updates. Thoughtful follow-through.</p>
       </div>
@@ -66,7 +91,7 @@
                 <div>
                   <small>Good morning, Alex</small><strong>Everything in one clear view.</strong>
                 </div>
-                <button type="button">+ New complaint</button>
+                <a href="<?= $loggedIn ? 'student/submit_complaint.php' : 'auth/login.php' ?>" class="button small" style="text-decoration:none;">+ New complaint</a>
               </div>
               <div class="preview-stats">
                 <div>
@@ -108,23 +133,20 @@
       </div>
       <div class="steps">
         <article>
-          <span>01</span><svg class="icon" width="26" height="26">
-            <use href="icons.svg#i-file-plus" />
-          </svg>
+          <span>01</span>
+          <svg class="icon" width="26" height="26"><use href="icons.svg#i-file-plus" /></svg>
           <h3>Submit</h3>
           <p>Describe the issue, where it is, and what needs attention.</p>
         </article>
         <article>
-          <span>02</span><svg class="icon" width="26" height="26">
-            <use href="icons.svg#i-eye" />
-          </svg>
+          <span>02</span>
+          <svg class="icon" width="26" height="26"><use href="icons.svg#i-eye" /></svg>
           <h3>Track</h3>
           <p>See exactly when your request has been reviewed and assigned.</p>
         </article>
         <article>
-          <span>03</span><svg class="icon" width="26" height="26">
-            <use href="icons.svg#i-check" />
-          </svg>
+          <span>03</span>
+          <svg class="icon" width="26" height="26"><use href="icons.svg#i-check" /></svg>
           <h3>Resolve</h3>
           <p>Get a clear update when the work is completed.</p>
         </article>
@@ -176,10 +198,10 @@
           Submit concerns in a few considered steps, keep a simple history,
           and know that your voice has a path forward.
         </p>
-        <a class="text-button" href="register.html">Create an account
-          <svg class="icon" width="18" height="18">
-            <use href="icons.svg#i-arrow" />
-          </svg></a>
+        <a class="text-button" href="auth/register.php">
+          Create an account
+          <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
+        </a>
       </div>
       <div class="experience admin-exp">
         <p class="eyebrow">For administrators</p>
@@ -188,37 +210,32 @@
           Review what needs attention, communicate clearly, and give every
           complaint a visible outcome.
         </p>
-        <a class="text-button light" href="admin-dashboard.html">View admin workspace
-          <svg class="icon" width="18" height="18">
-            <use href="icons.svg#i-arrow" />
-          </svg></a>
+        <a class="text-button light" href="admin/dashboard.php">
+          View admin workspace
+          <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
+        </a>
       </div>
     </section>
     <section class="final-cta">
       <p class="eyebrow">Campus Resolve</p>
       <h2>Have something<br />that needs attention?</h2>
-      <a class="button primary" href="register.html">Submit a complaint
-        <svg class="icon" width="18" height="18">
-          <use href="icons.svg#i-arrow" />
-        </svg></a>
+      <a class="button primary" href="<?= $loggedIn ? 'student/submit_complaint.php' : 'auth/register.php' ?>">
+        Submit a complaint
+        <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
+      </a>
       <p>One clear place to start.</p>
     </section>
   </main>
-  <!-- PHP include: includes/footer.php -->
   <footer>
     <div>
-      <a class="brand brand-dark" href="index.html"><span class="brand-mark"><svg class="icon" width="15" height="15">
-            <use href="icons.svg#i-check" />
-          </svg></span>Campus Resolve</a>
+      <a class="brand brand-dark" href="index.php">
+        <span class="brand-mark"><svg class="icon" width="15" height="15"><use href="icons.svg#i-check" /></svg></span>Campus Resolve
+      </a>
       <p>Student Complaint Management System</p>
     </div>
-    <p>© 2026 Campus Resolve</p>
+    <p>© <?= date('Y') ?> Campus Resolve</p>
   </footer>
-  <div
-    class="toast-region"
-    aria-live="polite"
-    aria-label="Notifications"></div>
-  <script src="assets\js\app.js" defer></script>
+  <div class="toast-region" aria-live="polite" aria-label="Notifications"></div>
+  <script src="assets/js/app.js" defer></script>
 </body>
-
 </html>
