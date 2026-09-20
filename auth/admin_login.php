@@ -101,7 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <small class="error"></small>
           </label>
           <label class="field">
-            <span>Password</span>
+            <span style="display:flex; justify-content:space-between; align-items:center;">
+              <span>Password</span>
+              <a href="otp.php" style="font-size:12.5px; color:var(--blue, #0a6ef6); text-decoration:none; font-weight:500;">Forgot password?</a>
+            </span>
             <span class="password-wrap">
               <input
                 id="login-password"
