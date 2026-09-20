@@ -5,9 +5,9 @@
 declare(strict_types=1);
 
 $base = '../';
-require_once __DIR__ . '../config/db_connect.php';
-require_once __DIR__ . '../includes/auth.php';
-require_once __DIR__ . '../includes/helpers.php';
+require_once __DIR__ . '/../config/db_connect.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/helpers.php';
 
 if (is_logged_in() && is_admin()) {
     header("Location: {$base}admin/dashboard.php");
@@ -17,39 +17,47 @@ if (is_logged_in() && is_admin()) {
 $error = '';
 $email = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if (empty($email) || empty($password)) {
-        $error = 'Please enter both your administrator email and password.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    if (!validate_csrf()) {
+        $error = 'Invalid security token. Please try again.';
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? AND `role` = 'admin' LIMIT 1");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
-        if ($user && password_verify($password, $user['password'])) {
-            if ($user['status'] !== 'active') {
-                $error = 'Your administrator account has been deactivated.';
-            } else {
-                $_SESSION['user'] = [
-                    'id'         => (int)$user['id'],
-                    'user_code'  => $user['user_code'],
-                    'name'       => $user['name'],
-                    'email'      => $user['email'],
-                    'role'       => $user['role'],
-                    'department' => $user['department'],
-                    'status'     => $user['status'],
-                    'created_at' => $user['created_at'],
-                ];
-                set_flash('Welcome to the admin workspace, ' . $user['name'] . '!', 'success');
-                header("Location: {$base}admin/dashboard.php");
-                exit;
-            }
+        if (empty($email) || empty($password)) {
+            $error = 'Please enter both your administrator email and password.';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Please enter a valid email address.';
         } else {
-            $error = 'Invalid administrator credentials.';
+            try {
+                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? AND `role` = 'admin' LIMIT 1");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
+
+                if ($user && password_verify($password, $user['password'])) {
+                    if ($user['status'] !== 'active') {
+                        $error = 'Your administrator account has been deactivated.';
+                    } else {
+                        $_SESSION['user'] = [
+                            'id'         => (int)$user['id'],
+                            'user_code'  => $user['user_code'],
+                            'name'       => $user['name'],
+                            'email'      => $user['email'],
+                            'role'       => $user['role'],
+                            'department' => $user['department'],
+                            'status'     => $user['status'],
+                            'created_at' => $user['created_at'],
+                        ];
+                        set_flash('Welcome to the admin workspace, ' . $user['name'] . '!', 'success');
+                        header("Location: {$base}admin/dashboard.php");
+                        exit;
+                    }
+                } else {
+                    $error = 'Invalid administrator credentials or unauthorized account.';
+                }
+            } catch (PDOException $e) {
+                $error = 'Database service unavailable. Please check back shortly.';
+            }
         }
     }
 }
@@ -75,13 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main id="main-content" class="auth-main">
       <section class="auth-card reveal">
         <div class="auth-copy">
-          <p class="eyebrow">Operations & Oversight</p>
+          <p class="eyebrow" style="color:var(--indigo, #4f46e5); font-weight:650;">Operations &amp; Oversight</p>
           <h1>Administrator Portal.</h1>
-          <p>Sign in with your campus staff or administrator credentials.</p>
+          <p>Sign in with your administrative credentials to manage campus concerns.</p>
         </div>
 
         <?php if (!empty($error)): ?>
-          <div class="form-alert" role="alert" style="display:block; margin-bottom:1rem; color:var(--color-danger, #d9534f); background:rgba(217,83,79,0.1); padding:0.75rem 1rem; border-radius:6px;">
+          <div class="form-alert" role="alert">
             <?= e($error) ?>
           </div>
         <?php endif; ?>
@@ -104,16 +112,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>Password</span>
             <span class="password-wrap">
               <input
-                id="login-password"
+                id="admin-password"
                 name="password"
                 type="password"
+                placeholder="Enter admin password"
                 autocomplete="current-password"
                 required
               />
               <button
                 type="button"
                 class="password-toggle"
-                data-password-toggle="login-password"
+                data-password-toggle="admin-password"
                 aria-label="Show password"
               >
                 <svg class="icon" width="18" height="18"><use href="<?= $base ?>icons.svg#i-eye" /></svg>
@@ -129,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="auth-switch">
           Student account? <a href="login.php">Student Sign in</a>
         </p>
-        <div class="demo-note" style="margin-top:1.5rem; font-size:0.82rem; color:var(--color-muted, #71717a); line-height:1.4;">
+        <div class="demo-note" style="margin-top:20px; line-height:1.5; border-top:1px solid var(--line); padding-top:16px;">
           <strong>Admin credentials:</strong><br />
           • Email: <code>admin@campus.edu</code><br />
           • Password: <code>Admin@123</code>
