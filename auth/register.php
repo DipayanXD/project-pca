@@ -28,6 +28,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     if (empty($name) || empty($email) || empty($department) || empty($password)) {
         $error = 'All fields are required.';
+    } elseif (!in_array($department, get_departments(), true)) {
+        $error = 'Please select a valid department from the dropdown.';
     } elseif (mb_strlen($name) < 2) {
         $error = 'Name must be at least 2 characters.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -165,15 +167,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             <span>Department</span>
             <select name="department" required>
               <option value="" disabled <?= empty($department) ? 'selected' : '' ?>>Select your department</option>
-              <option value="Computer Application" <?= $department === 'Computer Application' ? 'selected' : '' ?>>Computer Application</option>
-              <option value="Computer Science &amp; Engineering" <?= $department === 'Computer Science & Engineering' ? 'selected' : '' ?>>Computer Science &amp; Engineering</option>
-              <option value="Information Technology" <?= $department === 'Information Technology' ? 'selected' : '' ?>>Information Technology</option>
-              <option value="Electrical Engineering" <?= $department === 'Electrical Engineering' ? 'selected' : '' ?>>Electrical Engineering</option>
-              <option value="Mechanical Engineering" <?= $department === 'Mechanical Engineering' ? 'selected' : '' ?>>Mechanical Engineering</option>
-              <option value="Civil Engineering" <?= $department === 'Civil Engineering' ? 'selected' : '' ?>>Civil Engineering</option>
-              <option value="Business Administration" <?= $department === 'Business Administration' ? 'selected' : '' ?>>Business Administration</option>
-              <option value="Science &amp; Humanities" <?= $department === 'Science & Humanities' ? 'selected' : '' ?>>Science &amp; Humanities</option>
-              <option value="Other" <?= $department === 'Other' ? 'selected' : '' ?>>Other</option>
+              <?php foreach (get_departments() as $dept): ?>
+                <option value="<?= e($dept) ?>" <?= $department === $dept ? 'selected' : '' ?>><?= e($dept) ?></option>
+              <?php endforeach; ?>
             </select>
             <small class="error"></small>
           </label>

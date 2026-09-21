@@ -74,3 +74,25 @@ function friendly_time(?string $datetime): string {
     }
     return date('M j, Y', $time);
 }
+
+/**
+ * Return list of all available academic departments.
+ *
+ * @return string[]
+ */
+function get_departments(): array {
+    return [
+        'Computer Science & Engineering (CSE)',
+        'Information Technology (IT)',
+        'Computer Applications (BCA)',
+        'Electronics & Communication Engineering (ECE)',
+        'Electrical Engineering (EE)',
+        'Mechanical Engineering (ME)',
+        'Civil Engineering',
+        'Electronics & Instrumentation Engineering (EIE)',
+        'Food Technology',
+        'Business Management',
+        'Media Science',
+        'Hospitality Management',
+    ];
+}

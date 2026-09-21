@@ -8,11 +8,11 @@ USE `campus_resolve`;
 
 INSERT INTO `users` (`id`, `user_code`, `name`, `email`, `password`, `role`, `department`, `status`, `created_at`) VALUES
 (1, 'AD-001', 'Priya Sharma', 'admin@campus.edu', '$2y$10$/nUMYk2B3DHbQ01fOrZBhuoA7RcnaIzKBU2CPvgcqolUtClJYBIHu', 'admin', 'Administration', 'active', '2026-07-28 10:00:00'),
-(2, 'ST-2016', 'Alex Johnson', 'alex.johnson@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Computer Application', 'active', '2026-08-12 11:30:00'),
-(3, 'ST-2017', 'Maya Patel', 'maya.patel@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Information Technology', 'active', '2026-08-14 09:15:00'),
-(4, 'ST-2018', 'Rohan Mehta', 'rohan.mehta@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Electrical Engineering', 'active', '2026-08-14 14:20:00'),
-(5, 'ST-2019', 'Sara Khan', 'sara.khan@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Mechanical Engineering', 'active', '2026-08-20 16:45:00')
-ON DUPLICATE KEY UPDATE `name`=VALUES(`name`);
+(2, 'ST-2016', 'Alex Johnson', 'alex.johnson@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Computer Applications (BCA)', 'active', '2026-08-12 11:30:00'),
+(3, 'ST-2017', 'Maya Patel', 'maya.patel@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Information Technology (IT)', 'active', '2026-08-14 09:15:00'),
+(4, 'ST-2018', 'Rohan Mehta', 'rohan.mehta@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Electrical Engineering (EE)', 'active', '2026-08-14 14:20:00'),
+(5, 'ST-2019', 'Sara Khan', 'sara.khan@campus.edu', '$2y$10$BL/T7rtupWvJGiqewYckxuzrhfMuM844dcohnQD8NLYVuimecJ3Ky', 'student', 'Mechanical Engineering (ME)', 'active', '2026-08-20 16:45:00')
+ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `department`=VALUES(`department`);
 
 -- Insert Complaints
 INSERT INTO `complaints` (`id`, `complaint_code`, `user_id`, `title`, `category`, `location`, `description`, `attachment`, `status`, `created_at`, `updated_at`) VALUES
