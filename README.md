@@ -23,7 +23,7 @@ In academic institutions, students frequently encounter campus-related issues ra
 The system is architected around two primary user roles, strictly adhering to role-based access control (RBAC):
 
 *   **Student (Complainant / Grievant):**
-    *   Registers and authenticates via secure login with OTP verification / password recovery.
+    *   Registers and authenticates via secure login.
     *   Logs new complaints by selecting category (Infrastructure, IT, Facilities, Laboratory, Other), specific location, detailed description, and supporting attachments.
     *   Tracks the real-time status and timeline updates of their submitted complaints (`Pending` &rarr; `In Progress` / `Under Review` &rarr; `Resolved` / `Rejected`).
     *   Views their personalized dashboard with key metrics (total submitted, active complaints, resolved count, resolution rate).
@@ -44,7 +44,7 @@ Every mandatory module specified in the university project guidelines has been m
 
 | # | Mandatory Module | How It Applies to This Project |
 |---|---|---|
-| **1** | **Authentication** | Student registration, student login, administrative login, and secure session termination (logout). Passwords are cryptographically hashed using PHP's native `password_hash()` with `PASSWORD_DEFAULT` (Bcrypt). Features a multi-stage, time-expiring 6-digit OTP verification and password reset workflow (`auth/otp.php`). |
+| **1** | **Authentication** | Student registration, student login, administrative login, and secure session termination (logout). Passwords are cryptographically hashed using PHP's native `password_hash()` with `PASSWORD_DEFAULT` (Bcrypt). |
 | **2** | **Role-Based Access** | Strict session-based access control segregating `student` and `admin` roles via middleware guards (`auth_check_student.php`, `auth_check_admin.php`). Unauthorized access attempts automatically redirect to respective login portals. |
 | **3** | **Dashboard** | **Student Dashboard:** Real-time metrics of personal grievances (total lodged, pending, in progress, resolved, resolution rate percentage) and recent ticket history.<br>**Admin Dashboard:** Campus-wide analytics including total complaints, pending review queue, active in-progress investigations, resolved rate, registered student count, and weekly activity distribution. |
 | **4** | **Core Entity CRUD** | The primary entity is **Complaint**. Students can Create (lodge) and Read (view status and details). Administrators can Read (all records), Update (status transition and timeline remarks), and Delete / Moderate invalid entries. |
@@ -105,18 +105,6 @@ The database `campus_resolve` is configured with strict foreign key constraints,
 | `remark` | `TEXT`, Not Null | Administrative remark or inspection note |
 | `created_at` | `DATETIME`, Default `CURRENT_TIMESTAMP` | Update timestamp |
 
-#### Table: `otp_verifications` (Authentication & Recovery)
-| Column | Type / Constraints | Notes |
-|---|---|---|
-| `id` | `INT`, Primary Key, Auto Increment | Verification transaction ID |
-| `email` | `VARCHAR(120)`, Indexed, Not Null | Target user email |
-| `otp_code` | `VARCHAR(10)`, Not Null | 6-digit one-time verification passcode |
-| `purpose` | `VARCHAR(50)`, Default `'password_reset'` | Verification context (`password_reset`, `email_verify`) |
-| `attempts` | `INT`, Default `0` | Rate limiting / brute-force attempt counter |
-| `is_verified` | `TINYINT(1)`, Default `0` | Verification confirmation flag |
-| `expires_at` | `DATETIME`, Not Null | Expiration timestamp (typically 10 minutes) |
-| `created_at` | `DATETIME`, Default `CURRENT_TIMESTAMP` | Generation timestamp |
-
 ---
 
 ### 6. Page List
@@ -127,18 +115,17 @@ The database `campus_resolve` is configured with strict foreign key constraints,
 | **2** | **Student Login** (`auth/login.php`) | Public | Secure credential authentication for enrolled students with CSRF verification and remember-me state. |
 | **3** | **Admin Login** (`auth/admin_login.php`) | Public | Dedicated administrative portal for campus authorities and grievance officers. |
 | **4** | **Student Registration** (`auth/register.php`) | Public | Account registration for students capturing user code, full name, department, email, and password. |
-| **5** | **OTP Verification & Password Reset** (`auth/otp.php`) | Public | Multi-step self-service password recovery featuring OTP request, verification, security rate-limiting, and password reset. |
-| **6** | **Logout Handler** (`auth/logout.php`) | Authenticated | Safely destroys sessions, clears auth cookies, and redirects with flash feedback. |
-| **7** | **Student Dashboard** (`student/dashboard.php`) | Student | Personalized student hub showing metrics (open, in-progress, resolved complaints, resolution rate) and recent activity. |
-| **8** | **Submit Complaint** (`student/submit_complaint.php`) | Student | Form to file a grievance with title, category, location, detailed description, and evidence upload. |
-| **9** | **My Complaints Listing** (`student/complaints.php`) | Student | Searchable, filterable list of all complaints filed by the logged-in student with real-time status badges. |
-| **10** | **Student Complaint Details** (`student/complaint_detail.php`) | Student | Detailed inspection of a specific grievance with issue background, attached media, and chronological progress timeline. |
-| **11** | **Student Profile** (`student/profile.php`) | Student | Interface to view student credentials, edit contact details, and update password. |
-| **12** | **Admin Dashboard** (`admin/dashboard.php`) | Admin | Centralized analytics center displaying institutional grievance totals, pending queues, active investigations, and student counts. |
-| **13** | **Admin Complaints Manager** (`admin/complaints/list.php`) | Admin | Complete institutional complaints register with search, status filters, category filters, and direct action triggers. |
-| **14** | **Admin Complaint Inspection & Action** (`admin/complaints/detail.php`) | Admin | Single complaint review screen with controls to transition statuses (`Under Review`, `In Progress`, `Resolved`, `Rejected`) and record official notes. |
-| **15** | **User Management** (`admin/users/list.php`) | Admin | Directory of registered student accounts, departments, account statuses, and grievance history counts. |
-| **16** | **Admin Profile** (`admin/profile.php`) | Admin | Administrative account management and credential configuration. |
+| **5** | **Logout Handler** (`auth/logout.php`) | Authenticated | Safely destroys sessions, clears auth cookies, and redirects with flash feedback. |
+| **6** | **Student Dashboard** (`student/dashboard.php`) | Student | Personalized student hub showing metrics (open, in-progress, resolved complaints, resolution rate) and recent activity. |
+| **7** | **Submit Complaint** (`student/submit_complaint.php`) | Student | Form to file a grievance with title, category, location, detailed description, and evidence upload. |
+| **8** | **My Complaints Listing** (`student/complaints.php`) | Student | Searchable, filterable list of all complaints filed by the logged-in student with real-time status badges. |
+| **9** | **Student Complaint Details** (`student/complaint_detail.php`) | Student | Detailed inspection of a specific grievance with issue background, attached media, and chronological progress timeline. |
+| **10** | **Student Profile** (`student/profile.php`) | Student | Interface to view student credentials, edit contact details, and update password. |
+| **11** | **Admin Dashboard** (`admin/dashboard.php`) | Admin | Centralized analytics center displaying institutional grievance totals, pending queues, active investigations, and student counts. |
+| **12** | **Admin Complaints Manager** (`admin/complaints/list.php`) | Admin | Complete institutional complaints register with search, status filters, category filters, and direct action triggers. |
+| **13** | **Admin Complaint Inspection & Action** (`admin/complaints/detail.php`) | Admin | Single complaint review screen with controls to transition statuses (`Under Review`, `In Progress`, `Resolved`, `Rejected`) and record official notes. |
+| **14** | **User Management** (`admin/users/list.php`) | Admin | Directory of registered student accounts, departments, account statuses, and grievance history counts. |
+| **15** | **Admin Profile** (`admin/profile.php`) | Admin | Administrative account management and credential configuration. |
 
 ---
 
@@ -171,7 +158,6 @@ campus-resolve/
 │   ├── register.php                # Student account registration with server-side validation & hashing
 │   ├── login.php                   # Student sign-in portal with session initialization
 │   ├── admin_login.php             # Dedicated administrative sign-in portal
-│   ├── otp.php                     # Complete OTP code verification and password reset workflow
 │   └── logout.php                  # Destroys session, cleans cookies, and redirects to public portal
 │
 ├── student/
@@ -192,7 +178,7 @@ campus-resolve/
 │   └── profile.php                 # Administrator profile and security settings
 │
 ├── database/
-│   ├── schema.sql                  # Database definition: users, complaints, complaint_updates, otp_verifications
+│   ├── schema.sql                  # Database definition: users, complaints, complaint_updates
 │   └── seed.sql                    # Initial seed data for test accounts (Admin & Student) and demo grievances
 │
 ├── uploads/
@@ -215,9 +201,6 @@ campus-resolve/
    * **Cross-Site Scripting (XSS) Prevention:** Output sanitization helper `e($string)` wrapping `htmlspecialchars()` across all dynamic views.
    * **CSRF Protection:** Cryptographic session tokens generated via `csrf_token()` and verified with `validate_csrf()`.
 
-3. **Authentication & Password Recovery (OTP):**
-   * Robust OTP verification program (`auth/otp.php`) featuring secure random 6-digit codes, database/session persistence, 10-minute expiry timestamps, attempt throttling to deter brute-force attacks, and password reset capability.
-
-4. **User Interface & Experience (Prototype 4 Integration):**
+3. **User Interface & Experience (Prototype 4 Integration):**
    * Premium design system using custom CSS custom properties (variables), high-contrast typography, responsive sidebars, micro-animations, and accessible color-coded status badges.
    * Fully responsive layouts tested across mobile, tablet, and desktop viewports.
