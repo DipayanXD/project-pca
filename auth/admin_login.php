@@ -153,12 +153,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <p class="auth-switch" style="margin-top:0.5rem;">
           Need a student account? <a href="register.php">Create an account</a>
         </p>
-
-        <div class="demo-note" style="margin-top:20px; line-height:1.5; border-top:1px solid var(--line); padding-top:16px;">
-          <strong>Admin credentials:</strong><br />
-          • Email: <code>admin@campus.edu</code><br />
-          • Password: <code>Admin@123</code>
-        </div>
       </section>
     </main>
     <?php require __DIR__ . '/../includes/footer.php'; ?>

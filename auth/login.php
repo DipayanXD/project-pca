@@ -143,11 +143,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <p class="auth-switch" style="margin-top:0.5rem;">
           Campus Administrator? <a href="admin_login.php">Administrator Sign in</a>
         </p>
-        <div class="demo-note" style="margin-top:1.5rem; font-size:0.82rem; color:var(--color-muted, #71717a); line-height:1.4;">
-          <strong>Demo credentials:</strong><br />
-          • Student: <code>alex.johnson@campus.edu</code> / <code>Student@123</code><br />
-          • Admin: <code>admin@campus.edu</code> / <code>Admin@123</code>
-        </div>
       </section>
     </main>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
