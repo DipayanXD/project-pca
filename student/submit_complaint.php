@@ -295,7 +295,7 @@ $flash = get_flash();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title><?= $isEditing ? 'Edit Complaint' : 'Submit Complaint' ?> — Campus Resolve</title>
-    <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css" />
+    <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css?v=<?= time() ?>" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>

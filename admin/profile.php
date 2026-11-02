@@ -4,7 +4,6 @@
  * 
  * Displays administrator profile details and allows updating personal information
  * and credentials with CSRF protection, input validation, and flash notifications.
- * Matches prototypes/prototype-4/admin-profile.html.
  */
 
 declare(strict_types=1);
@@ -131,7 +130,7 @@ $formDept = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($department ?? ($adminData[
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Admin Profile — Campus Resolve</title>
-    <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css" />
+    <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css?v=<?= time() ?>" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -143,13 +142,13 @@ $formDept = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($department ?? ($adminData[
 
         <main id="main-content" class="app-main">
           <section class="page-head">
-            <p class="eyebrow">Account</p>
-            <h1>Your profile</h1>
-            <p>Keep your Campus Resolve account information current.</p>
+            <p class="eyebrow">Account Settings</p>
+            <h1>Administrator Profile</h1>
+            <p>Manage your account credentials, contact information, and security settings.</p>
           </section>
 
           <?php if ($flash): ?>
-            <div class="form-alert <?= $flash['type'] === 'success' ? 'success' : '' ?>" role="status">
+            <div class="form-alert <?= ($flash['type'] ?? '') === 'success' ? 'success' : '' ?>" role="<?= ($flash['type'] ?? '') === 'success' ? 'status' : 'alert' ?>">
               <?= e($flash['message']) ?>
             </div>
           <?php endif; ?>
@@ -166,133 +165,160 @@ $formDept = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($department ?? ($adminData[
           <?php endif; ?>
 
           <section class="profile-layout">
-            <!-- Left Info Card Matching Prototype-4 -->
-            <div class="panel profile-card">
-              <span class="avatar profile-avatar"><?= e($initials) ?></span>
-              <h2><?= e($adminData['name']) ?></h2>
-              <p><?= e($adminData['email']) ?></p>
-              <div style="margin: 12px 0;">
-                <span class="role-chip">Administrator</span>
-                <span class="id-link" style="margin-left: 8px;"><?= e($adminData['user_code']) ?></span>
-              </div>
-              <hr />
-              <dl>
-                <div>
-                  <dt>Department</dt>
-                  <dd><?= e($adminData['department'] ?: 'Administration') ?></dd>
+            <!-- Left Info Card -->
+            <aside class="panel profile-card">
+              <div class="profile-cover"></div>
+              <div class="profile-card-body">
+                <div class="profile-avatar-wrap">
+                  <span class="avatar profile-avatar"><?= e($initials) ?></span>
                 </div>
-                <div>
-                  <dt>Account status</dt>
-                  <dd><span class="account-active"><?= ucfirst(e($adminData['status'] ?? 'active')) ?></span></dd>
+                <h2 class="profile-name"><?= e($adminData['name']) ?></h2>
+                <p class="profile-email"><?= e($adminData['email']) ?></p>
+                <div class="profile-badges">
+                  <span class="role-chip admin">Administrator</span>
+                  <span class="id-badge"><?= e($adminData['user_code']) ?></span>
                 </div>
-                <div>
-                  <dt>Member since</dt>
-                  <dd><?= e(format_date($adminData['created_at'], true)) ?></dd>
+
+                <div class="profile-stats-grid">
+                  <div class="profile-stat-box">
+                    <span class="stat-number"><?= $totalComplaints ?></span>
+                    <span class="stat-label">Complaints</span>
+                  </div>
+                  <div class="profile-stat-box">
+                    <span class="stat-number"><?= $totalStudents ?></span>
+                    <span class="stat-label">Students</span>
+                  </div>
                 </div>
-                <div>
-                  <dt>System complaints</dt>
-                  <dd><strong><?= $totalComplaints ?></strong></dd>
-                </div>
-                <div>
-                  <dt>Registered students</dt>
-                  <dd><strong><?= $totalStudents ?></strong></dd>
-                </div>
-              </dl>
-            </div>
 
-            <!-- Right Edit Form Matching Prototype-4 -->
-            <form class="panel profile-form" method="post" data-validate novalidate>
-              <?= csrf_field() ?>
-              <div class="panel-head">
-                <div>
-                  <h2>Personal information</h2>
-                  <p>Used only to identify your account and administrative actions.</p>
-                </div>
-              </div>
-
-              <label class="field">
-                <span>Full name</span>
-                <input
-                  name="name"
-                  value="<?= e($formName) ?>"
-                  required
-                  minlength="3"
-                  maxlength="100"
-                />
-                <small class="error"></small>
-              </label>
-
-              <label class="field">
-                <span>Email address</span>
-                <input
-                  name="email"
-                  type="email"
-                  value="<?= e($formEmail) ?>"
-                  required
-                  maxlength="120"
-                />
-                <small class="error"></small>
-              </label>
-
-              <label class="field">
-                <span>Department / Office</span>
-                <input
-                  name="department"
-                  value="<?= e($formDept) ?>"
-                  maxlength="100"
-                />
-                <small class="error"></small>
-              </label>
-
-              <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line);">
-                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--ink);">Change Password</h3>
-                <p style="font-size: 12px; color: var(--muted); margin-bottom: 16px;">Leave blank if you do not wish to update your password.</p>
-
-                <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-                  <label class="field">
-                    <span>Current password</span>
-                    <input
-                      name="current_password"
-                      type="password"
-                      placeholder="Enter current password to verify"
-                      autocomplete="current-password"
-                    />
-                  </label>
-
-                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                    <label class="field">
-                      <span>New password</span>
-                      <input
-                        name="new_password"
-                        type="password"
-                        placeholder="Min 6 characters"
-                        autocomplete="new-password"
-                      />
-                    </label>
-
-                    <label class="field">
-                      <span>Confirm new password</span>
-                      <input
-                        name="confirm_password"
-                        type="password"
-                        placeholder="Confirm new password"
-                        autocomplete="new-password"
-                      />
-                    </label>
+                <div class="profile-meta-list">
+                  <div class="profile-meta-item">
+                    <span class="meta-label">Department</span>
+                    <span class="meta-value"><?= e($adminData['department'] ?: 'Administration') ?></span>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-label">Account Status</span>
+                    <span class="meta-value status-active">
+                      <span class="status-dot"></span>Active
+                    </span>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-label">Member Since</span>
+                    <span class="meta-value"><?= e(format_date($adminData['created_at'], true)) ?></span>
                   </div>
                 </div>
               </div>
+            </aside>
 
-              <div class="form-actions">
-                <button class="button primary" type="submit">
-                  Save changes
-                </button>
-              </div>
-            </form>
+            <!-- Right Edit Form Panel -->
+            <div class="panel profile-form-panel">
+              <form class="profile-form" method="post" data-validate novalidate>
+                <?= csrf_field() ?>
+                <div class="form-section-head">
+                  <div>
+                    <h2>Personal Information</h2>
+                    <p>Update your display name, administrative email, and department assignment.</p>
+                  </div>
+                </div>
+
+                <div class="profile-grid">
+                  <label class="field">
+                    <span>Full name</span>
+                    <input
+                      name="name"
+                      value="<?= e($formName) ?>"
+                      required
+                      minlength="3"
+                      maxlength="100"
+                      placeholder="e.g. Priya Sharma"
+                    />
+                    <small class="error"></small>
+                  </label>
+
+                  <label class="field">
+                    <span>Email address</span>
+                    <input
+                      name="email"
+                      type="email"
+                      value="<?= e($formEmail) ?>"
+                      required
+                      maxlength="120"
+                      placeholder="e.g. admin@campus.edu"
+                    />
+                    <small class="error"></small>
+                  </label>
+
+                  <label class="field full">
+                    <span>Department / Office</span>
+                    <input
+                      name="department"
+                      value="<?= e($formDept) ?>"
+                      maxlength="100"
+                      placeholder="e.g. Administration"
+                    />
+                    <small class="error"></small>
+                  </label>
+                </div>
+
+                <!-- Security & Password Card -->
+                <div class="profile-security-box">
+                  <div class="security-box-header">
+                    <div class="security-icon-wrap">
+                      <svg class="icon" width="18" height="18"><use href="<?= $base ?>icons.svg#i-settings" /></svg>
+                    </div>
+                    <div>
+                      <h3>Security & Password</h3>
+                      <p>Leave these fields empty if you do not want to change your current password.</p>
+                    </div>
+                  </div>
+
+                  <div class="security-fields">
+                    <label class="field">
+                      <span>Current password</span>
+                      <input
+                        name="current_password"
+                        type="password"
+                        placeholder="Enter current password to verify"
+                        autocomplete="current-password"
+                      />
+                    </label>
+
+                    <div class="profile-grid">
+                      <label class="field">
+                        <span>New password</span>
+                        <input
+                          name="new_password"
+                          type="password"
+                          placeholder="Minimum 6 characters"
+                          autocomplete="new-password"
+                        />
+                      </label>
+
+                      <label class="field">
+                        <span>Confirm new password</span>
+                        <input
+                          name="confirm_password"
+                          type="password"
+                          placeholder="Re-type new password"
+                          autocomplete="new-password"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button class="button primary" type="submit">
+                    <svg class="icon" width="16" height="16"><use href="<?= $base ?>icons.svg#i-check" /></svg>
+                    Save changes
+                  </button>
+                </div>
+              </form>
+            </div>
           </section>
         </main>
       </div>
     </div>
 
     <?php require __DIR__ . '/../includes/footer.php'; ?>
-
+  </body>
+</html>

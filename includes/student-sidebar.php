@@ -32,17 +32,12 @@ $active_nav = $active_nav ?? '';
     </nav>
   </div>
   <div class="sidebar-bottom">
-    <?php if (is_admin()): ?>
-      <a class="side-link" href="<?= $base ?>admin/dashboard.php">
-        <svg class="icon"><use href="<?= $base ?>icons.svg#i-settings" /></svg>Admin workspace
-      </a>
-    <?php endif; ?>
     <a class="side-link" href="<?= $base ?>auth/logout.php">
       <svg class="icon"><use href="<?= $base ?>icons.svg#i-arrow-left" /></svg>Sign out
     </a>
-    <div class="sidebar-user">
+    <a class="sidebar-user" href="<?= $base ?>student/profile.php" title="View Student Profile">
       <span class="avatar"><?= e($initials) ?></span>
       <div><strong><?= e($name) ?></strong><small>Student</small></div>
-    </div>
+    </a>
   </div>
 </aside>

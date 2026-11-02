@@ -4,7 +4,6 @@
  * 
  * Displays student profile information, academic details, and activity summary.
  * Allows updating profile details and credentials with CSRF protection and server-side validation.
- * Matches prototypes/prototype-4/profile.html.
  */
 
 declare(strict_types=1);
@@ -27,6 +26,10 @@ $userData = $stmt->fetch() ?: $user;
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM `complaints` WHERE `user_id` = ?");
 $stmt->execute([$userId]);
 $totalComplaints = (int)$stmt->fetchColumn();
+
+$stmtResolved = $pdo->prepare("SELECT COUNT(*) FROM `complaints` WHERE `user_id` = ? AND `status` = 'Resolved'");
+$stmtResolved->execute([$userId]);
+$resolvedComplaints = (int)$stmtResolved->fetchColumn();
 
 $errors = [];
 
@@ -123,6 +126,9 @@ $crumb_title = 'Profile';
 $flash = get_flash();
 $initials = user_initials($userData['name']);
 $departments = get_departments();
+$formName = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($name ?? $userData['name']) : $userData['name'];
+$formEmail = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($email ?? $userData['email']) : $userData['email'];
+$formDept = $_SERVER['REQUEST_METHOD'] === 'POST' ? ($department ?? ($userData['department'] ?? '')) : ($userData['department'] ?? '');
 ?>
 <!doctype html>
 <html lang="en">
@@ -130,7 +136,7 @@ $departments = get_departments();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Profile — Campus Resolve</title>
-    <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css" />
+    <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css?v=<?= time() ?>" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -142,8 +148,8 @@ $departments = get_departments();
 
         <main id="main-content" class="app-main">
           <section class="page-head">
-            <p class="eyebrow">Account</p>
-            <h1>Your profile</h1>
+            <p class="eyebrow">Account Settings</p>
+            <h1>Your Profile</h1>
             <p>Keep your Campus Resolve account and contact information current.</p>
           </section>
 
@@ -165,88 +171,114 @@ $departments = get_departments();
           <?php endif; ?>
 
           <section class="profile-layout">
-            <!-- Left Info Card Matching Prototype-4 -->
-            <div class="panel profile-card">
-              <span class="avatar profile-avatar"><?= e($initials) ?></span>
-              <h2><?= e($userData['name']) ?></h2>
-              <p><?= e($userData['email']) ?></p>
-              <div style="margin: 12px 0;">
-                <span class="role-chip">Student</span>
-                <span class="id-link" style="margin-left: 8px;"><?= e($userData['user_code']) ?></span>
+            <!-- Left Info Card -->
+            <aside class="panel profile-card">
+              <div class="profile-cover student"></div>
+              <div class="profile-card-body">
+                <div class="profile-avatar-wrap">
+                  <span class="avatar profile-avatar student"><?= e($initials) ?></span>
+                </div>
+                <h2 class="profile-name"><?= e($userData['name']) ?></h2>
+                <p class="profile-email"><?= e($userData['email']) ?></p>
+                <div class="profile-badges">
+                  <span class="role-chip student">Student</span>
+                  <span class="id-badge"><?= e($userData['user_code']) ?></span>
+                </div>
+
+                <div class="profile-stats-grid">
+                  <div class="profile-stat-box">
+                    <span class="stat-number"><?= $totalComplaints ?></span>
+                    <span class="stat-label">My Reports</span>
+                  </div>
+                  <div class="profile-stat-box">
+                    <span class="stat-number"><?= $resolvedComplaints ?></span>
+                    <span class="stat-label">Resolved</span>
+                  </div>
+                </div>
+
+                <div class="profile-meta-list">
+                  <div class="profile-meta-item">
+                    <span class="meta-label">Department</span>
+                    <span class="meta-value"><?= e($userData['department'] ?: 'Not assigned') ?></span>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-label">Account Status</span>
+                    <span class="meta-value status-active">
+                      <span class="status-dot"></span>Active
+                    </span>
+                  </div>
+                  <div class="profile-meta-item">
+                    <span class="meta-label">Member Since</span>
+                    <span class="meta-value"><?= e(format_date($userData['created_at'], true)) ?></span>
+                  </div>
+                </div>
               </div>
-              <hr />
-              <dl>
-                <div>
-                  <dt>Department</dt>
-                  <dd><?= e($userData['department'] ?: 'Not assigned') ?></dd>
+            </aside>
+
+            <!-- Right Edit Form Panel -->
+            <div class="panel profile-form-panel">
+              <form class="profile-form" method="post" data-validate novalidate>
+                <?= csrf_field() ?>
+                <div class="form-section-head">
+                  <div>
+                    <h2>Personal Information</h2>
+                    <p>Used to identify your account and department across campus.</p>
+                  </div>
                 </div>
-                <div>
-                  <dt>Account status</dt>
-                  <dd><span class="account-active"><?= ucfirst(e($userData['status'] ?? 'active')) ?></span></dd>
+
+                <div class="profile-grid">
+                  <label class="field">
+                    <span>Full name</span>
+                    <input
+                      name="name"
+                      value="<?= e($formName) ?>"
+                      required
+                      minlength="3"
+                      maxlength="100"
+                      placeholder="e.g. Alex Johnson"
+                    />
+                    <small class="error"></small>
+                  </label>
+
+                  <label class="field">
+                    <span>Email address</span>
+                    <input
+                      name="email"
+                      type="email"
+                      value="<?= e($formEmail) ?>"
+                      required
+                      maxlength="120"
+                      placeholder="e.g. alex.johnson@campus.edu"
+                    />
+                    <small class="error"></small>
+                  </label>
+
+                  <label class="field full">
+                    <span>Academic department</span>
+                    <select name="department">
+                      <option value="">Select your department</option>
+                      <?php foreach ($departments as $dept): ?>
+                        <option value="<?= e($dept) ?>" <?= $formDept === $dept ? 'selected' : '' ?>>
+                          <?= e($dept) ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
+                  </label>
                 </div>
-                <div>
-                  <dt>Member since</dt>
-                  <dd><?= e(format_date($userData['created_at'], true)) ?></dd>
-                </div>
-                <div>
-                  <dt>Total complaints</dt>
-                  <dd><strong><?= $totalComplaints ?></strong></dd>
-                </div>
-              </dl>
-            </div>
 
-            <!-- Right Edit Form Matching Prototype-4 -->
-            <form class="panel profile-form" method="post" data-validate novalidate>
-              <?= csrf_field() ?>
-              <div class="panel-head">
-                <div>
-                  <h2>Personal information</h2>
-                  <p>Used to identify your account and department across campus.</p>
-                </div>
-              </div>
+                <!-- Security & Password Card -->
+                <div class="profile-security-box">
+                  <div class="security-box-header">
+                    <div class="security-icon-wrap">
+                      <svg class="icon" width="18" height="18"><use href="<?= $base ?>icons.svg#i-settings" /></svg>
+                    </div>
+                    <div>
+                      <h3>Security & Password</h3>
+                      <p>Leave these fields empty if you do not want to change your current password.</p>
+                    </div>
+                  </div>
 
-              <div style="padding: 24px;">
-                <label class="field">
-                  <span>Full name</span>
-                  <input
-                    name="name"
-                    value="<?= e($userData['name']) ?>"
-                    required
-                    minlength="3"
-                    maxlength="100"
-                  />
-                  <small class="error"></small>
-                </label>
-
-                <label class="field">
-                  <span>Email address</span>
-                  <input
-                    name="email"
-                    type="email"
-                    value="<?= e($userData['email']) ?>"
-                    required
-                    maxlength="120"
-                  />
-                  <small class="error"></small>
-                </label>
-
-                <label class="field">
-                  <span>Academic department</span>
-                  <select name="department">
-                    <option value="">Select your department</option>
-                    <?php foreach ($departments as $dept): ?>
-                      <option value="<?= e($dept) ?>" <?= ($userData['department'] ?? '') === $dept ? 'selected' : '' ?>>
-                        <?= e($dept) ?>
-                      </option>
-                    <?php endforeach; ?>
-                  </select>
-                </label>
-
-                <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line);">
-                  <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--ink);">Change Password</h3>
-                  <p style="font-size: 12px; color: var(--muted); margin-bottom: 16px;">Leave blank if you do not wish to update your password.</p>
-
-                  <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                  <div class="security-fields">
                     <label class="field">
                       <span>Current password</span>
                       <input
@@ -257,13 +289,13 @@ $departments = get_departments();
                       />
                     </label>
 
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    <div class="profile-grid">
                       <label class="field">
                         <span>New password</span>
                         <input
                           name="new_password"
                           type="password"
-                          placeholder="Min 6 characters"
+                          placeholder="Minimum 6 characters"
                           autocomplete="new-password"
                         />
                       </label>
@@ -273,7 +305,7 @@ $departments = get_departments();
                         <input
                           name="confirm_password"
                           type="password"
-                          placeholder="Confirm new password"
+                          placeholder="Re-type new password"
                           autocomplete="new-password"
                         />
                       </label>
@@ -281,13 +313,14 @@ $departments = get_departments();
                   </div>
                 </div>
 
-                <div class="form-actions" style="margin-top: 24px; padding-top: 18px;">
+                <div class="form-actions">
                   <button class="button primary" type="submit">
+                    <svg class="icon" width="16" height="16"><use href="<?= $base ?>icons.svg#i-check" /></svg>
                     Save changes
                   </button>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </section>
         </main>
       </div>

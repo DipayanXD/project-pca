@@ -18,7 +18,7 @@ $dashboardUrl = is_admin() ? 'admin/dashboard.php' : 'student/dashboard.php';
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Campus Resolve — Student Complaint Management System" />
   <title>Campus Resolve — Student Complaint Management</title>
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>

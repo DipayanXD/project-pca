@@ -40,6 +40,34 @@ document.addEventListener("DOMContentLoaded", () => {
       button.addEventListener("click", () => toast(button.dataset.toast)),
     );
 
+  // Header user profile dropdown menu
+  const userMenuBtn = document.getElementById("user-menu-button");
+  const userDropdown = document.getElementById("user-dropdown-menu");
+  if (userMenuBtn && userDropdown) {
+    const toggleDropdown = (open) => {
+      const isOpen = open !== undefined ? open : !userDropdown.classList.contains("is-open");
+      userDropdown.classList.toggle("is-open", isOpen);
+      userMenuBtn.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    userMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleDropdown();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+        toggleDropdown(false);
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        toggleDropdown(false);
+      }
+    });
+  }
+
   document.querySelectorAll("[data-mobile-nav]").forEach((button) =>
     button.addEventListener("click", () => {
       const shell = button.closest(".app-shell");

@@ -26,24 +26,18 @@ $active_nav = $active_nav ?? '';
       <a class="side-link <?= $active_nav === 'users' ? 'active' : '' ?>" href="<?= $base ?>admin/users.php">
         <svg class="icon"><use href="<?= $base ?>icons.svg#i-users" /></svg>Users
       </a>
-      <a class="side-link <?= $active_nav === 'export' ? 'active' : '' ?>" href="<?= $base ?>admin/export.php">
-        <svg class="icon"><use href="<?= $base ?>icons.svg#i-doc" /></svg>Export CSV
-      </a>
       <a class="side-link <?= $active_nav === 'admin-profile' ? 'active' : '' ?>" href="<?= $base ?>admin/profile.php">
         <svg class="icon"><use href="<?= $base ?>icons.svg#i-user" /></svg>Profile
       </a>
     </nav>
   </div>
   <div class="sidebar-bottom">
-    <a class="side-link" href="<?= $base ?>student/dashboard.php">
-      <svg class="icon"><use href="<?= $base ?>icons.svg#i-dashboard" /></svg>Student view
-    </a>
     <a class="side-link" href="<?= $base ?>auth/logout.php">
       <svg class="icon"><use href="<?= $base ?>icons.svg#i-arrow-left" /></svg>Sign out
     </a>
-    <div class="sidebar-user">
+    <a class="sidebar-user" href="<?= $base ?>admin/profile.php" title="View Administrator Profile">
       <span class="avatar"><?= e($initials) ?></span>
       <div><strong><?= e($name) ?></strong><small>Administrator</small></div>
-    </div>
+    </a>
   </div>
 </aside>
