@@ -20,7 +20,7 @@ $active_nav = $active_nav ?? '';
       <a class="side-link <?= $active_nav === 'admin-dashboard' ? 'active' : '' ?>" href="<?= $base ?>admin/dashboard.php">
         <svg class="icon"><use href="<?= $base ?>icons.svg#i-dashboard" /></svg>Dashboard
       </a>
-      <a class="side-link <?= $active_nav === 'admin-complaints' ? 'active' : '' ?>" href="<?= $base ?>admin/complaints/list.php">
+      <a class="side-link <?= $active_nav === 'admin-complaints' ? 'active' : '' ?>" href="<?= $base ?>admin/complaints.php">
         <svg class="icon"><use href="<?= $base ?>icons.svg#i-doc" /></svg>All Complaints
       </a>
       <a class="side-link <?= $active_nav === 'users' ? 'active' : '' ?>" href="<?= $base ?>admin/users.php">

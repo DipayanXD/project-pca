@@ -1,6 +1,7 @@
 <?php
 /**
  * Campus Resolve - Administrator Sign In
+ * Provides secure authentication for campus administrators and staff.
  */
 declare(strict_types=1);
 
@@ -9,6 +10,7 @@ require_once __DIR__ . '/../config/db_connect.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/helpers.php';
 
+// If already signed in as an administrator, redirect to the admin dashboard
 if (is_logged_in() && is_admin()) {
     header("Location: {$base}admin/dashboard.php");
     exit;
@@ -30,13 +32,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $error = 'Please enter a valid email address.';
         } else {
             try {
-                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? AND `role` = 'admin' LIMIT 1");
+                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? LIMIT 1");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch();
 
                 if ($user && password_verify($password, $user['password'])) {
-                    if ($user['status'] !== 'active') {
-                        $error = 'Your administrator account has been deactivated.';
+                    if ($user['role'] !== 'admin') {
+                        $error = 'Access restricted: This account does not have administrator privileges. Please use the student sign-in.';
+                    } elseif ($user['status'] !== 'active') {
+                        $error = 'Your administrator account has been deactivated. Please contact campus administration.';
                     } else {
                         $_SESSION['user'] = [
                             'id'         => (int)$user['id'],
@@ -48,14 +52,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                             'status'     => $user['status'],
                             'created_at' => $user['created_at'],
                         ];
-                        set_flash('Welcome to the admin workspace, ' . $user['name'] . '!', 'success');
+                        set_flash('Welcome back, ' . $user['name'] . '!', 'success');
                         header("Location: {$base}admin/dashboard.php");
                         exit;
                     }
                 } else {
-                    $error = 'Invalid administrator credentials or unauthorized account.';
+                    $error = 'Invalid administrator email or password.';
                 }
             } catch (PDOException $e) {
+                error_log("Admin login query exception: " . $e->getMessage());
                 $error = 'Database service unavailable. Please check back shortly.';
             }
         }
@@ -85,8 +90,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <div class="auth-copy">
           <p class="eyebrow" style="color:var(--indigo, #4f46e5); font-weight:650;">Operations &amp; Oversight</p>
           <h1>Administrator Portal.</h1>
-          <p>Sign in with your administrative credentials to manage campus concerns.</p>
+          <p>Sign in with your administrator credentials to manage campus complaints.</p>
         </div>
+
+        <?php if (is_logged_in() && !is_admin()): ?>
+          <div class="form-alert" role="status" style="display:block; margin-bottom:1rem; color:var(--color-primary, #0284c7); background:rgba(2,132,199,0.08); padding:0.75rem 1rem; border-radius:6px; font-size:0.875rem;">
+            You are currently signed in as <strong><?= e(current_user()['name'] ?? 'Student') ?></strong> (Student). Signing in below will switch to an administrator session.
+          </div>
+        <?php endif; ?>
 
         <?php if (!empty($error)): ?>
           <div class="form-alert" role="alert">
@@ -135,9 +146,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             <svg class="icon" width="18" height="18"><use href="<?= $base ?>icons.svg#i-arrow" /></svg>
           </button>
         </form>
+
         <p class="auth-switch">
           Student account? <a href="login.php">Student Sign in</a>
         </p>
+        <p class="auth-switch" style="margin-top:0.5rem;">
+          Need a student account? <a href="register.php">Create an account</a>
+        </p>
+
         <div class="demo-note" style="margin-top:20px; line-height:1.5; border-top:1px solid var(--line); padding-top:16px;">
           <strong>Admin credentials:</strong><br />
           • Email: <code>admin@campus.edu</code><br />
@@ -146,3 +162,5 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
       </section>
     </main>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
+  </body>
+</html>
