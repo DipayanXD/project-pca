@@ -1,2 +1,0 @@
--- Lab Equipment Borrowing System
--- CREATE TABLE statements go here (to be added in class)
