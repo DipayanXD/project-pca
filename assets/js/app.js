@@ -215,18 +215,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const search = document.getElementById("user-search");
     const role = document.getElementById("user-role");
     const rows = [...userTable.tBodies[0].rows];
-    const update = () =>
-      rows.forEach((row) =>
-        row.classList.toggle(
-          "is-hidden",
-          !(
-            row.textContent
-              .toLowerCase()
-              .includes((search.value || "").toLowerCase()) &&
-            (!role.value || row.dataset.role === role.value)
-          ),
-        ),
-      );
+    const update = () => {
+      const q = (search?.value || "").toLowerCase();
+      const r = (role?.value || "").toLowerCase();
+      rows.forEach((row) => {
+        const rowRole = (row.dataset.role || "").toLowerCase();
+        const roleMatches = !r || rowRole === r || (r === "admin" && rowRole === "administrator") || (r === "administrator" && rowRole === "admin");
+        const textMatches = row.textContent.toLowerCase().includes(q);
+        row.classList.toggle("is-hidden", !(textMatches && roleMatches));
+      });
+    };
     search.addEventListener("input", update);
     role.addEventListener("change", update);
   }

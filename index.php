@@ -55,7 +55,7 @@ $dashboardUrl = is_admin() ? 'admin/dashboard.php' : 'student/dashboard.php';
         </p>
         <div class="hero-actions">
           <?php if ($loggedIn): ?>
-            <a class="button primary" href="<?= is_admin() ? 'admin/complaints/list.php' : 'student/submit_complaint.php' ?>">
+            <a class="button primary" href="<?= is_admin() ? 'admin/complaints.php' : 'student/submit_complaint.php' ?>">
               <?= is_admin() ? 'Manage complaints' : 'Submit a complaint' ?>
               <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
             </a>

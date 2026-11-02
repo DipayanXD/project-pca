@@ -26,7 +26,7 @@ $active_nav = $active_nav ?? '';
       <a class="side-link <?= $active_nav === 'users' ? 'active' : '' ?>" href="<?= $base ?>admin/users.php">
         <svg class="icon"><use href="<?= $base ?>icons.svg#i-users" /></svg>Users
       </a>
-      <a class="side-link <?= $active_nav === 'export' ? 'active' : '' ?>" href="<?= $base ?>admin/complaints/export.php">
+      <a class="side-link <?= $active_nav === 'export' ? 'active' : '' ?>" href="<?= $base ?>admin/export.php">
         <svg class="icon"><use href="<?= $base ?>icons.svg#i-doc" /></svg>Export CSV
       </a>
       <a class="side-link <?= $active_nav === 'admin-profile' ? 'active' : '' ?>" href="<?= $base ?>admin/profile.php">

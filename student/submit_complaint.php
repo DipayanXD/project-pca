@@ -29,7 +29,8 @@ $categories = ['Infrastructure', 'IT', 'Facilities', 'Laboratory', 'Other'];
 // -----------------------------------------------------------------------------
 // 2. Check If Editing an Existing Complaint (via GET or POST id)
 // -----------------------------------------------------------------------------
-$complaintId = (int)($_GET['id'] ?? $_POST['complaint_id'] ?? 0);
+$rawId = $_GET['id'] ?? $_POST['complaint_id'] ?? 0;
+$complaintId = filter_var($rawId, FILTER_VALIDATE_INT) !== false ? (int)$rawId : 0;
 $isEditing = false;
 $existing = null;
 
@@ -313,7 +314,7 @@ $flash = get_flash();
 
             <!-- Server Flash Feedback -->
             <?php if ($flash): ?>
-              <div class="form-alert <?= $flash['type'] === 'success' ? 'success' : '' ?>" role="status">
+              <div class="form-alert <?= ($flash['type'] ?? '') === 'success' ? 'success' : '' ?>" role="<?= ($flash['type'] ?? '') === 'success' ? 'status' : 'alert' ?>">
                 <?= e($flash['message']) ?>
               </div>
             <?php endif; ?>

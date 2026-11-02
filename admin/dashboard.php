@@ -144,6 +144,12 @@ $crumb_title = 'Dashboard';
             <p>Here’s the current complaint and resolution picture across campus.</p>
           </section>
 
+          <?php $flash = get_flash(); if ($flash): ?>
+            <div class="form-alert <?= $flash['type'] === 'success' ? 'success' : '' ?>" role="status">
+              <?= e($flash['message']) ?>
+            </div>
+          <?php endif; ?>
+
           <!-- Metrics summary grid -->
           <section class="stats-grid admin-stats">
             <article class="stat-card">

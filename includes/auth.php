@@ -6,6 +6,10 @@
 declare(strict_types=1);
 
 if (session_status() === PHP_SESSION_NONE) {
+    if (!headers_sent()) {
+        @ini_set('session.cookie_httponly', '1');
+        @ini_set('session.use_only_cookies', '1');
+    }
     session_start();
 }
 
@@ -95,14 +99,20 @@ function set_flash(string $message, string $type = 'info'): void {
 
 /**
  * Retrieve and clear the flash notification.
+ * Caches within the current request execution so both in-page alerts
+ * and footer toast notifications receive the notification.
  */
-function get_flash(): ?array {
-    if (isset($_SESSION['flash'])) {
-        $flash = $_SESSION['flash'];
-        unset($_SESSION['flash']);
-        return $flash;
+function get_flash(bool $clearCache = false): ?array {
+    static $cached = null;
+    if ($clearCache) {
+        $cached = null;
+        return null;
     }
-    return null;
+    if (isset($_SESSION['flash'])) {
+        $cached = $_SESSION['flash'];
+        unset($_SESSION['flash']);
+    }
+    return $cached;
 }
 
 /**

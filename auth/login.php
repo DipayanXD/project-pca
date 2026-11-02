@@ -84,6 +84,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
           <p>Use your student email to access your complaint workspace.</p>
         </div>
 
+        <?php $flash = get_flash(); if ($flash): ?>
+          <div class="form-alert <?= ($flash['type'] ?? '') === 'success' ? 'success' : '' ?>" role="<?= ($flash['type'] ?? '') === 'success' ? 'status' : 'alert' ?>" style="<?= ($flash['type'] ?? '') === 'info' ? 'color:#1e40af; background:#eff6ff; border-color:#bfdbfe;' : '' ?>">
+            <?= e($flash['message']) ?>
+          </div>
+        <?php endif; ?>
+
         <?php if (!empty($error)): ?>
           <div class="form-alert" role="alert">
             <?= e($error) ?>

@@ -22,7 +22,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!validate_csrf()) {
         set_flash('Session security token expired. Please try again.', 'error');
     } else {
-        $complaintId = (int)($_POST['complaint_id'] ?? 0);
+        $rawId = $_POST['complaint_id'] ?? 0;
+$complaintId = filter_var($rawId, FILTER_VALIDATE_INT) !== false ? (int)$rawId : 0;
         $newStatus   = trim((string)($_POST['status'] ?? ''));
 
         // Normalize legacy aliases if submitted

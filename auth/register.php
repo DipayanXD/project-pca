@@ -20,6 +20,9 @@ $email = '';
 $department = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    if (!validate_csrf()) {
+        $error = 'Invalid security token. Please try again.';
+    } else {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $department = trim($_POST['department'] ?? '');
@@ -67,6 +70,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             header('Location: ' . ($role === 'admin' ? "{$base}admin/dashboard.php" : "{$base}student/dashboard.php"));
             exit;
         }
+    }
     }
 }
 ?>

@@ -18,7 +18,8 @@ require_once __DIR__ . '/../includes/auth_check_student.php';
 $user = current_user();
 $userId = (int)($user['id'] ?? 0);
 
-$complaintId = (int)($_GET['id'] ?? 0);
+$rawId = $_GET['id'] ?? 0;
+$complaintId = filter_var($rawId, FILTER_VALIDATE_INT) !== false ? (int)$rawId : 0;
 if ($complaintId < 1) {
     set_flash('Please select a valid complaint to view.', 'error');
     header('Location: complaints.php');
@@ -86,7 +87,7 @@ $flash = get_flash();
             </a>
 
             <?php if ($flash): ?>
-              <div class="form-alert <?= $flash['type'] === 'success' ? 'success' : '' ?>" role="status">
+              <div class="form-alert <?= ($flash['type'] ?? '') === 'success' ? 'success' : '' ?>" role="<?= ($flash['type'] ?? '') === 'success' ? 'status' : 'alert' ?>">
                 <?= e($flash['message']) ?>
               </div>
             <?php endif; ?>

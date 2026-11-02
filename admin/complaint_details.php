@@ -18,7 +18,8 @@ require_once __DIR__ . '/../includes/helpers.php';
 $user = current_user();
 $adminId = isset($user['id']) ? (int)$user['id'] : null;
 
-$complaintId = (int)($_GET['id'] ?? $_POST['complaint_id'] ?? 0);
+$rawId = $_GET['id'] ?? $_POST['complaint_id'] ?? 0;
+$complaintId = filter_var($rawId, FILTER_VALIDATE_INT) !== false ? (int)$rawId : 0;
 if ($complaintId < 1) {
     set_flash('Please select a valid complaint to view.', 'error');
     header('Location: complaints.php');

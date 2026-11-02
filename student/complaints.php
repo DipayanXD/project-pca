@@ -13,7 +13,8 @@ $categories = ['Infrastructure', 'IT', 'Facilities', 'Laboratory', 'Other'];
 $statuses = ['Pending', 'In Progress', 'Resolved', 'Rejected'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $complaintId = (int)($_POST['complaint_id'] ?? 0);
+    $rawId = $_POST['complaint_id'] ?? 0;
+$complaintId = filter_var($rawId, FILTER_VALIDATE_INT) !== false ? (int)$rawId : 0;
     if (!validate_csrf()) {
         set_flash('Your session token expired. Please try again.', 'error');
     } elseif ($complaintId < 1) {
@@ -105,7 +106,7 @@ $crumb_title = 'My Complaints';
             </a>
           </section>
           <?php $flash = get_flash(); if ($flash): ?>
-            <div class="form-alert <?= $flash['type'] === 'success' ? 'success' : '' ?>" role="status">
+            <div class="form-alert <?= ($flash['type'] ?? '') === 'success' ? 'success' : '' ?>" role="<?= ($flash['type'] ?? '') === 'success' ? 'status' : 'alert' ?>">
               <?= e($flash['message']) ?>
             </div>
           <?php endif; ?>

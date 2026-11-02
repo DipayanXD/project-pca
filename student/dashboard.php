@@ -107,6 +107,12 @@ $crumb_title = 'Dashboard';
             </a>
           </section>
 
+          <?php $flash = get_flash(); if ($flash): ?>
+            <div class="form-alert <?= ($flash['type'] ?? '') === 'success' ? 'success' : '' ?>" role="<?= ($flash['type'] ?? '') === 'success' ? 'status' : 'alert' ?>">
+              <?= e($flash['message']) ?>
+            </div>
+          <?php endif; ?>
+
           <section class="stats-grid">
             <article class="stat-card">
               <div>
