@@ -4,8 +4,8 @@
  */
 declare(strict_types=1);
 
-require_once __DIR__ . '../includes/auth.php';
-require_once __DIR__ . '../includes/helpers.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/helpers.php';
 
 $loggedIn = is_logged_in();
 $user = current_user();
@@ -210,7 +210,7 @@ $dashboardUrl = is_admin() ? 'admin/dashboard.php' : 'student/dashboard.php';
           Review what needs attention, communicate clearly, and give every
           complaint a visible outcome.
         </p>
-        <a class="text-button light" href="admin/dashboard.php">
+        <a class="text-button light" href="<?= is_admin() ? 'admin/dashboard.php' : 'auth/admin_login.php' ?>">
           View admin workspace
           <svg class="icon" width="18" height="18"><use href="icons.svg#i-arrow" /></svg>
         </a>

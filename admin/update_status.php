@@ -33,8 +33,15 @@ if (isset($_POST['csrf_token']) && !validate_csrf()) {
 $complaintId = (int)($_POST['complaint_id'] ?? 0);
 $newStatus   = trim((string)($_POST['status'] ?? ''));
 
-// 2. Allow only these status values
-$allowedStatuses = ['Pending', 'Approved', 'Completed'];
+// Normalize legacy aliases if submitted
+if ($newStatus === 'Approved') {
+    $newStatus = 'In Progress';
+} elseif ($newStatus === 'Completed') {
+    $newStatus = 'Resolved';
+}
+
+// 2. Allow valid complaint status values
+$allowedStatuses = ['Pending', 'In Progress', 'Resolved', 'Rejected'];
 
 // 3. Validate complaint ID
 if ($complaintId < 1) {
@@ -45,7 +52,7 @@ if ($complaintId < 1) {
 
 // 4. Validate status value
 if (!in_array($newStatus, $allowedStatuses, true)) {
-    set_flash('Invalid status selected. Must be Pending, Approved, or Completed.', 'error');
+    set_flash('Invalid status selected. Must be Pending, In Progress, Resolved, or Rejected.', 'error');
     header('Location: complaints.php');
     exit;
 }

@@ -15,7 +15,7 @@ require_once __DIR__ . '/../includes/auth_check_admin.php';
 require_once __DIR__ . '/../includes/helpers.php';
 
 $user = current_user();
-$validStatuses = ['Pending', 'Approved', 'Completed'];
+$validStatuses = ['Pending', 'In Progress', 'Resolved', 'Rejected', 'Approved', 'Completed'];
 
 // Handle status update via POST
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -25,10 +25,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $complaintId = (int)($_POST['complaint_id'] ?? 0);
         $newStatus   = trim((string)($_POST['status'] ?? ''));
 
+        // Normalize legacy aliases if submitted
+        if ($newStatus === 'Approved') {
+            $newStatus = 'In Progress';
+        } elseif ($newStatus === 'Completed') {
+            $newStatus = 'Resolved';
+        }
+
         if ($complaintId < 1) {
             set_flash('Invalid complaint selected for update.', 'error');
-        } elseif (!in_array($newStatus, $validStatuses, true)) {
-            set_flash('Invalid status selected. Must be Pending, Approved, or Completed.', 'error');
+        } elseif (!in_array($newStatus, ['Pending', 'In Progress', 'Resolved', 'Rejected'], true)) {
+            set_flash('Invalid status selected. Must be Pending, In Progress, Resolved, or Rejected.', 'error');
         } else {
             // Verify complaint exists in database
             $stmtCheck = $pdo->prepare("SELECT `id`, `complaint_code`, `status` FROM `complaints` WHERE `id` = ?");
@@ -102,31 +109,14 @@ function get_details_page_url(int $complaintId): string {
     if (file_exists(__DIR__ . '/complaint_details.php')) {
         return 'complaint_details.php?id=' . $complaintId;
     }
-    if (file_exists(__DIR__ . '/../student/complaint_details.php')) {
-        return '../student/complaint_details.php?id=' . $complaintId;
-    }
-    return 'complaints/detail.php?id=' . $complaintId;
+    return '#';
 }
 
 /**
- * Render appropriate status badge supporting Pending, Approved, and Completed.
+ * Render appropriate status badge.
  */
 function render_complaint_status(string $status): string {
-    $normalized = strtolower(trim($status));
-    $cls = 'pending';
-    $label = htmlspecialchars($status, ENT_QUOTES, 'UTF-8');
-
-    if ($normalized === 'approved' || $normalized === 'in progress' || $normalized === 'in-progress' || $normalized === 'under review') {
-        $cls = 'in-progress';
-    } elseif ($normalized === 'completed' || $normalized === 'resolved') {
-        $cls = 'resolved';
-    } elseif ($normalized === 'rejected') {
-        $cls = 'rejected';
-    } elseif ($normalized === 'pending') {
-        $cls = 'pending';
-    }
-
-    return '<span class="status ' . $cls . '"><i></i>' . $label . '</span>';
+    return status_badge($status);
 }
 ?>
 <!doctype html>
@@ -137,27 +127,6 @@ function render_complaint_status(string $status): string {
     <title>All Complaints — Campus Resolve Admin</title>
     <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css" />
     <style>
-      .status.approved {
-        background: #edf3ff;
-        color: #1d5dbb;
-      }
-      .status.approved i {
-        background: #287cff;
-      }
-      .status.completed {
-        background: #eaf8f0;
-        color: #19734f;
-      }
-      .status.completed i {
-        background: #26a269;
-      }
-      .status.rejected {
-        background: #fdf0ef;
-        color: #a7271d;
-      }
-      .status.rejected i {
-        background: #e02424;
-      }
       .alert-box {
         padding: 12px 16px;
         border-radius: 8px;
@@ -275,19 +244,22 @@ function render_complaint_status(string $status): string {
                         </td>
                         <td data-label="Action">
                           <div class="action-cluster">
-                            <a class="button small secondary view-link" href="<?= e($detailUrl) ?>">
-                              View
-                              <svg class="icon" width="14" height="14">
-                                <use href="<?= $base ?>icons.svg#i-arrow" />
-                              </svg>
-                            </a>
+                            <?php if ($detailUrl !== '#'): ?>
+                              <a class="button small secondary view-link" href="<?= e($detailUrl) ?>">
+                                View
+                                <svg class="icon" width="14" height="14">
+                                  <use href="<?= $base ?>icons.svg#i-arrow" />
+                                </svg>
+                              </a>
+                            <?php endif; ?>
                             <form method="POST" action="complaints.php" class="status-form">
                               <?= csrf_field() ?>
                               <input type="hidden" name="complaint_id" value="<?= (int)$c['id'] ?>" />
                               <select name="status" class="status-select" aria-label="Update status for <?= e($c['complaint_code']) ?>">
                                 <option value="Pending" <?= ($curStatus === 'Pending') ? 'selected' : '' ?>>Pending</option>
-                                <option value="Approved" <?= ($curStatus === 'Approved' || $curStatus === 'In Progress') ? 'selected' : '' ?>>Approved</option>
-                                <option value="Completed" <?= ($curStatus === 'Completed' || $curStatus === 'Resolved') ? 'selected' : '' ?>>Completed</option>
+                                <option value="In Progress" <?= ($curStatus === 'In Progress' || $curStatus === 'Approved') ? 'selected' : '' ?>>In Progress</option>
+                                <option value="Resolved" <?= ($curStatus === 'Resolved' || $curStatus === 'Completed') ? 'selected' : '' ?>>Resolved</option>
+                                <option value="Rejected" <?= ($curStatus === 'Rejected') ? 'selected' : '' ?>>Rejected</option>
                               </select>
                               <button type="submit" class="button small primary">
                                 Update
@@ -311,3 +283,5 @@ function render_complaint_status(string $status): string {
       </div>
     </div>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
+  </body>
+</html>

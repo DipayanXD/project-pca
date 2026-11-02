@@ -20,40 +20,49 @@ $error = '';
 $email = '';
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if (empty($email) || empty($password)) {
-        $error = 'Please enter both your administrator email and password.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
+    if (!validate_csrf()) {
+        $error = 'Invalid security token. Please try again.';
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? LIMIT 1");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
-        if ($user && password_verify($password, $user['password'])) {
-            if ($user['role'] !== 'admin') {
-                $error = 'Access restricted: This account does not have administrator privileges. Please use the student sign-in.';
-            } elseif ($user['status'] !== 'active') {
-                $error = 'Your administrator account has been deactivated. Please contact campus administration.';
-            } else {
-                $_SESSION['user'] = [
-                    'id'         => (int)$user['id'],
-                    'user_code'  => $user['user_code'],
-                    'name'       => $user['name'],
-                    'email'      => $user['email'],
-                    'role'       => $user['role'],
-                    'department' => $user['department'],
-                    'status'     => $user['status'],
-                    'created_at' => $user['created_at'],
-                ];
-                set_flash('Welcome back, ' . $user['name'] . '!', 'success');
-                header("Location: {$base}admin/dashboard.php");
-                exit;
-            }
+        if (empty($email) || empty($password)) {
+            $error = 'Please enter both your administrator email and password.';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Please enter a valid email address.';
         } else {
-            $error = 'Invalid administrator email or password.';
+            try {
+                $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? LIMIT 1");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
+
+                if ($user && password_verify($password, $user['password'])) {
+                    if ($user['role'] !== 'admin') {
+                        $error = 'Access restricted: This account does not have administrator privileges. Please use the student sign-in.';
+                    } elseif ($user['status'] !== 'active') {
+                        $error = 'Your administrator account has been deactivated. Please contact campus administration.';
+                    } else {
+                        $_SESSION['user'] = [
+                            'id'         => (int)$user['id'],
+                            'user_code'  => $user['user_code'],
+                            'name'       => $user['name'],
+                            'email'      => $user['email'],
+                            'role'       => $user['role'],
+                            'department' => $user['department'],
+                            'status'     => $user['status'],
+                            'created_at' => $user['created_at'],
+                        ];
+                        set_flash('Welcome back, ' . $user['name'] . '!', 'success');
+                        header("Location: {$base}admin/dashboard.php");
+                        exit;
+                    }
+                } else {
+                    $error = 'Invalid administrator email or password.';
+                }
+            } catch (PDOException $e) {
+                error_log("Admin login query exception: " . $e->getMessage());
+                $error = 'Database service unavailable. Please check back shortly.';
+            }
         }
     }
 }
@@ -79,7 +88,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     <main id="main-content" class="auth-main">
       <section class="auth-card reveal">
         <div class="auth-copy">
-          <p class="eyebrow">Operations & Oversight</p>
+          <p class="eyebrow" style="color:var(--indigo, #4f46e5); font-weight:650;">Operations &amp; Oversight</p>
           <h1>Administrator Portal.</h1>
           <p>Sign in with your administrator credentials to manage campus complaints.</p>
         </div>
@@ -91,7 +100,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <?php endif; ?>
 
         <?php if (!empty($error)): ?>
-          <div class="form-alert" role="alert" style="display:block; margin-bottom:1rem; color:var(--color-danger, #d9534f); background:rgba(217,83,79,0.1); padding:0.75rem 1rem; border-radius:6px;">
+          <div class="form-alert" role="alert">
             <?= e($error) ?>
           </div>
         <?php endif; ?>
@@ -117,7 +126,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 id="admin-password"
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Enter admin password"
                 autocomplete="current-password"
                 required
               />
@@ -145,7 +154,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
           Need a student account? <a href="register.php">Create an account</a>
         </p>
 
-        <div class="demo-note" style="margin-top:1.5rem; font-size:0.82rem; color:var(--color-muted, #71717a); line-height:1.4;">
+        <div class="demo-note" style="margin-top:20px; line-height:1.5; border-top:1px solid var(--line); padding-top:16px;">
           <strong>Admin credentials:</strong><br />
           • Email: <code>admin@campus.edu</code><br />
           • Password: <code>Admin@123</code>
@@ -153,3 +162,5 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
       </section>
     </main>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
+  </body>
+</html>

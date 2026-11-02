@@ -17,9 +17,12 @@ if (is_logged_in()) {
 $error = '';
 $email = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    if (!validate_csrf()) {
+        $error = 'Invalid security token. Please try again.';
+    } else {
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
         $error = 'Please enter both your email address and password.';
@@ -53,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -81,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <?php if (!empty($error)): ?>
-          <div class="form-alert" role="alert" style="display:block; margin-bottom:1rem; color:var(--color-danger, #d9534f); background:rgba(217,83,79,0.1); padding:0.75rem 1rem; border-radius:6px;">
+          <div class="form-alert" role="alert">
             <?= e($error) ?>
           </div>
         <?php endif; ?>

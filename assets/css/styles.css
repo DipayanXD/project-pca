@@ -2291,3 +2291,83 @@ td small {
   width: 18px;
   height: 18px;
 }
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #475467;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 150ms ease;
+}
+.back-button:hover {
+  color: var(--blue);
+}
+
+.form-alert.success,
+.form-alert[role="status"] {
+  color: #0f5132;
+  background: #edf7f0;
+  border-color: #badbcc;
+}
+
+.form-alert ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.attachment.has-file {
+  border-color: var(--blue);
+  background: #f4f8ff;
+}
+
+.attachment.has-file em {
+  color: var(--green);
+}
+
+.role-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 650;
+  background: #eff4ff;
+  color: var(--blue);
+}
+
+.account-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  font-weight: 600;
+  font-size: 12px;
+}
+.account-active:before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.action-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.button.danger {
+  background: #fff;
+  border-color: #f6d1ce;
+  color: var(--red);
+}
+.button.danger:hover {
+  background: #fdf0ef;
+  border-color: #dc2626;
+}

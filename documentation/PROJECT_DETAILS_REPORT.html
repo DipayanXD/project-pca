@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details Report — Campus Resolve (BCAC591)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --primary-navy: #1a365d;
+      --accent-gold: #b45309;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --border-color: #cbd5e1;
+      --table-header-bg: #1a365d;
+      --table-row-alt: #f8fafc;
+      --code-bg: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 10mm 14mm 10mm 14mm;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      background-color: #e2e8f0;
+      line-height: 1.38;
+      font-size: 11.5px;
+      padding: 20px 12px;
+    }
+
+    .report-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 32px 40px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+    }
+
+    /* Print toolbar */
+    .toolbar-container {
+      max-width: 800px;
+      margin: 0 auto 12px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .doc-badge {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #ffffff;
+      padding: 5px 12px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .save-pdf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      padding: 7px 15px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(26, 54, 93, 0.25);
+      transition: background-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .save-pdf-btn:hover {
+      background-color: #2b4c7e;
+      transform: translateY(-1px);
+    }
+
+    /* Document Header */
+    .header-banner {
+      text-align: center;
+      border-bottom: 2px solid var(--accent-gold);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .institution-name {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .department-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.2px;
+      margin-bottom: 1px;
+    }
+
+    .course-info {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #64748b;
+      margin-bottom: 5px;
+    }
+
+    .report-main-title {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Section Headings */
+    h2.section-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary-navy);
+      border-bottom: 1.2px solid var(--primary-navy);
+      padding-bottom: 2px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      letter-spacing: 0.15px;
+    }
+
+    p.body-desc {
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      text-align: justify;
+    }
+
+    /* Lists */
+    ul.role-list, ul.optional-list {
+      margin-left: 16px;
+      margin-bottom: 8px;
+    }
+
+    ul.role-list li, ul.optional-list li {
+      font-size: 11px;
+      line-height: 1.38;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    ul.role-list li strong, ul.optional-list li strong {
+      color: #0f172a;
+    }
+
+    /* Tables */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      font-size: 10px;
+    }
+
+    table.data-table th {
+      background-color: var(--table-header-bg);
+      color: #ffffff;
+      font-weight: 600;
+      text-align: left;
+      padding: 4px 7px;
+      border: 1px solid var(--primary-navy);
+      font-size: 9.8px;
+    }
+
+    table.data-table td {
+      padding: 3.5px 7px;
+      border: 1px solid var(--border-color);
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    table.data-table tbody tr:nth-child(even) {
+      background-color: var(--table-row-alt);
+    }
+
+    .table-subheading {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 6px;
+      margin-bottom: 3px;
+    }
+
+    .col-num {
+      width: 26px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .col-module {
+      width: 135px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .col-colname {
+      width: 155px;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 9.8px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .col-page {
+      width: 175px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .col-role {
+      width: 105px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .col-status {
+      width: 110px;
+      text-align: center;
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-block;
+      padding: 1.5px 5.5px;
+      border-radius: 3px;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+
+    .badge-implemented {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge-partial {
+      background-color: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-planned {
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* File Structure */
+    pre.file-tree {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+      font-size: 9.2px;
+      line-height: 1.38;
+      color: #1e293b;
+      white-space: pre;
+      margin-top: 6px;
+    }
+
+    .comment {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* Explicit Page Breaks */
+    .page-break {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    /* Print settings */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 10pt;
+      }
+
+      .report-container {
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+
+      .page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      th {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-color: #1a365d !important;
+        color: #ffffff !important;
+      }
+
+      .badge-implemented {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .badge-partial {
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .badge-planned {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      pre.file-tree {
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="toolbar-container no-print">
+  <span class="doc-badge">BCAC591 Semester V · Project Details Report</span>
+  <button type="button" onclick="window.print()" class="save-pdf-btn">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <polyline points="7 10 12 15 17 10"></polyline>
+      <line x1="12" y1="15" x2="12" y2="3"></line>
+    </svg>
+    Save as PDF
+  </button>
+</div>
+
+<div class="report-container">
+
+  <!-- ==================== PAGE 1 ==================== -->
+
+  <!-- Document Header -->
+  <div class="header-banner">
+    <div class="institution-name">Techno Main Salt Lake</div>
+    <div class="department-name">Department of Computer Application (BCA)</div>
+    <div class="course-info">BCAC591 — PHP with MySQL | Semester V</div>
+    <div class="report-main-title">Project Details Report</div>
+  </div>
+
+  <!-- 1. Project Title -->
+  <h2 class="section-title">1. Project Title</h2>
+  <p class="body-desc" style="font-size: 11.5px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">
+    Campus Resolve — Student Complaint Management System
+  </p>
+
+  <!-- 2. Problem Statement -->
+  <h2 class="section-title">2. Problem Statement</h2>
+  <p class="body-desc">
+    Students regularly encounter facility, infrastructure, and laboratory issues across campus — such as malfunctioning classroom fans, defective lab workstations, drinking water cooler breakdowns, and damaged experiment equipment — but there is currently no organized, transparent way to lodge grievances or track their resolution. Verbal or paper complaints lead to lost records, lack of administrative accountability, and zero visibility for students regarding when repairs will occur. Campus Resolve provides a centralized, role-based platform where students can submit categorized complaints with precise campus locations and track progress through a transparent audit timeline, while campus administrators prioritize issues, record timestamped remarks, manage status transitions, and resolve grievances with verifiable accountability.
+  </p>
+
+  <!-- 3. User Roles -->
+  <h2 class="section-title">3. User Roles</h2>
+  <p class="body-desc" style="margin-bottom: 4px;">The system has two roles, matching the minimum requirement set in the project notice:</p>
+  <ul class="role-list">
+    <li>
+      <strong>Student (Complainant)</strong> — Registers with verified student credentials and academic department; logs in to access a personal workspace dashboard; views personal complaint metrics and resolution rates; submits new complaints with category, campus location, description, and optional image attachment; tracks real-time status and historical timeline of their own complaints; and manages personal profile details.
+    </li>
+    <li>
+      <strong>Admin (Campus Operations / Authority)</strong> — Logs in separately via dedicated administrator authentication; oversees campus operations through an analytics dashboard (reviewing pending queues, active tickets, registered student count, and 7-day activity volume); reviews all submitted grievances across departments; updates ticket statuses (<em>Pending &rarr; In Progress &rarr; Resolved / Rejected</em>) with official remarks recorded in the audit history; and monitors student accounts.
+    </li>
+  </ul>
+
+  <!-- 4. Module List (Part 1: 1 to 7) -->
+  <h2 class="section-title">4. Module List — Mapped to This Project</h2>
+  <p class="body-desc" style="margin-bottom: 4px;">Every mandatory module from the project notice, mapped specifically to this project's subject matter:</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-module">Mandatory Module</th>
+        <th>How It Applies to This Project</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-num">1</td>
+        <td class="col-module">Authentication</td>
+        <td>Student registration with validation (name, email, department dropdown, password match/strength) and login; separate Administrator login. Passwords securely hashed using <code>password_hash()</code>.</td>
+      </tr>
+      <tr>
+        <td class="col-num">2</td>
+        <td class="col-module">Role-Based Access</td>
+        <td>Two roles — Student and Administrator — each with a dedicated dashboard, distinct permission barriers, and session checks (<code>require_student()</code> and <code>require_admin()</code>).</td>
+      </tr>
+      <tr>
+        <td class="col-num">3</td>
+        <td class="col-module">Dashboard</td>
+        <td>Student dashboard displays personal complaint metrics (Total, Pending, In Progress, Resolved) and resolution rate %. Admin dashboard shows campus-wide counts, active triage queue, and 7-day activity chart.</td>
+      </tr>
+      <tr>
+        <td class="col-num">4</td>
+        <td class="col-module">Core Entity CRUD</td>
+        <td>The core entity is <strong>Complaint</strong> (supported by <strong>Complaint Updates</strong>). Students Create and View complaints. Admins View, Update status/remarks, and manage the full grievance lifecycle.</td>
+      </tr>
+      <tr>
+        <td class="col-num">5</td>
+        <td class="col-module">Listing Page</td>
+        <td>Complaints listing view — student personal complaints table and admin campus-wide registry with Search (by complaint code/title) and Filter (by category, department, and status).</td>
+      </tr>
+      <tr>
+        <td class="col-num">6</td>
+        <td class="col-module">Detail View</td>
+        <td>Clicking a complaint opens a comprehensive detail view displaying complaint code, student info, department, location, description, attached photo, and full chronological timeline of admin remarks.</td>
+      </tr>
+      <tr>
+        <td class="col-num">7</td>
+        <td class="col-module">Status Workflow</td>
+        <td>Each complaint moves through 4 states: <em>Pending &rarr; In Progress &rarr; Resolved</em> (or <em>Rejected</em>). Each transition creates a timestamped record in <code>complaint_updates</code>. Only Admin can update status.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- 4. Module List (Part 2: 8 to 11) -->
+  <table class="data-table" style="margin-top: 0;">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-module">Mandatory Module</th>
+        <th>How It Applies to This Project</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-num">8</td>
+        <td class="col-module">Admin Panel</td>
+        <td>A separate Admin area providing centralized visibility over all complaints across departments, with action forms to assign remarks, advance status, and monitor student accounts.</td>
+      </tr>
+      <tr>
+        <td class="col-num">9</td>
+        <td class="col-module">Form Validation</td>
+        <td>Complaint submission form validates title, category whitelist, location, description length, and attachment format; registration validates email uniqueness, department list, and password complexity in PHP, not just HTML5.</td>
+      </tr>
+      <tr>
+        <td class="col-num">10</td>
+        <td class="col-module">Flash Messages</td>
+        <td>Session-based flash message system (<code>set_flash()</code>, <code>get_flash()</code>) displaying alert banners on actions: complaint logged, status transition saved, profile updated, login failure, etc.</td>
+      </tr>
+      <tr>
+        <td class="col-num">11</td>
+        <td class="col-module">Profile Management</td>
+        <td>Students and Admins can view and edit their own name, contact email, assigned department, and change account passwords.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Optional Modules -->
+  <p class="body-desc" style="font-weight: 600; color: #0f172a; margin-top: 8px; margin-bottom: 4px;">
+    Optional modules included, since they genuinely apply to this project:
+  </p>
+  <ul class="optional-list">
+    <li>
+      <strong>Chronological Audit Timeline / Event History Tracking</strong> — Every status transition and administrative remark generates an immutable audit record in <code>complaint_updates</code>, giving both students and administrators complete, accountable transparency.
+    </li>
+    <li>
+      <strong>Campus Operations Analytics &amp; Visual Trends</strong> — Admin dashboard calculates real-time resolution rates, displays status breakdown metrics, and plots past 7-day complaint activity frequency.
+    </li>
+    <li>
+      <strong>File Handling &amp; Evidence Attachment</strong> — Students can attach image/document evidence of damaged infrastructure or equipment when submitting a complaint; files are validated, securely stored server-side in <code>uploads/complaints/</code>, and previewed in the detail view.
+    </li>
+  </ul>
+
+  <!-- 5. Database Tables (Part 1: users & complaints) -->
+  <h2 class="section-title">5. Database Tables (Schema)</h2>
+  <p class="body-desc">
+    The following is the database schema implemented in MySQL using InnoDB engine with foreign key constraints and UTF-8 encoding.
+  </p>
+
+  <div class="table-subheading">Table: users</div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th class="col-colname">Column</th>
+        <th>Type / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-colname">id</td>
+        <td>INT, Primary Key, Auto Increment</td>
+      </tr>
+      <tr>
+        <td class="col-colname">user_code</td>
+        <td>VARCHAR(20), Unique — e.g. ST-2016, AD-001</td>
+      </tr>
+      <tr>
+        <td class="col-colname">name</td>
+        <td>VARCHAR(100), Not Null</td>
+      </tr>
+      <tr>
+        <td class="col-colname">email</td>
+        <td>VARCHAR(120), Unique, Not Null</td>
+      </tr>
+      <tr>
+        <td class="col-colname">password</td>
+        <td>VARCHAR(255), Not Null — stored using password_hash()</td>
+      </tr>
+      <tr>
+        <td class="col-colname">role</td>
+        <td>ENUM('student', 'admin'), Not Null, Default 'student'</td>
+      </tr>
+      <tr>
+        <td class="col-colname">department</td>
+        <td>VARCHAR(100), Default Null — academic department affiliation</td>
+      </tr>
+      <tr>
+        <td class="col-colname">status</td>
+        <td>ENUM('active', 'inactive'), Not Null, Default 'active'</td>
+      </tr>
+      <tr>
+        <td class="col-colname">created_at</td>
+        <td>DATETIME, Not Null, Default CURRENT_TIMESTAMP</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="table-subheading">Table: complaints</div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th class="col-colname">Column</th>
+        <th>Type / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-colname">id</td>
+        <td>INT, Primary Key, Auto Increment</td>
+      </tr>
+      <tr>
+        <td class="col-colname">complaint_code</td>
+        <td>VARCHAR(20), Unique — e.g. CR-1042</td>
+      </tr>
+      <tr>
+        <td class="col-colname">user_id</td>
+        <td>INT, Foreign Key &rarr; users.id (ON DELETE CASCADE)</td>
+      </tr>
+      <tr>
+        <td class="col-colname">title</td>
+        <td>VARCHAR(200), Not Null — short summary of grievance</td>
+      </tr>
+      <tr>
+        <td class="col-colname">category</td>
+        <td>ENUM('Infrastructure', 'IT', 'Facilities', 'Laboratory', 'Other'), Not Null</td>
+      </tr>
+      <tr>
+        <td class="col-colname">location</td>
+        <td>VARCHAR(150), Not Null — e.g. Block B Room 204, Central Library</td>
+      </tr>
+      <tr>
+        <td class="col-colname">description</td>
+        <td>TEXT, Not Null — comprehensive issue description</td>
+      </tr>
+      <tr>
+        <td class="col-colname">attachment</td>
+        <td>VARCHAR(255), Nullable — server storage path of uploaded evidence</td>
+      </tr>
+      <tr>
+        <td class="col-colname">status</td>
+        <td>ENUM('Pending', 'In Progress', 'Resolved', 'Rejected'), Default 'Pending'</td>
+      </tr>
+      <tr>
+        <td class="col-colname">created_at</td>
+        <td>DATETIME, Not Null, Default CURRENT_TIMESTAMP</td>
+      </tr>
+      <tr>
+        <td class="col-colname">updated_at</td>
+        <td>DATETIME, Not Null, Default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== PAGE 3 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- 5. Database Tables (Part 2: complaint_updates) -->
+  <div class="table-subheading" style="margin-top: 0;">Table: complaint_updates</div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th class="col-colname">Column</th>
+        <th>Type / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-colname">id</td>
+        <td>INT, Primary Key, Auto Increment</td>
+      </tr>
+      <tr>
+        <td class="col-colname">complaint_id</td>
+        <td>INT, Foreign Key &rarr; complaints.id (ON DELETE CASCADE)</td>
+      </tr>
+      <tr>
+        <td class="col-colname">admin_id</td>
+        <td>INT, Nullable, Foreign Key &rarr; users.id (ON DELETE SET NULL)</td>
+      </tr>
+      <tr>
+        <td class="col-colname">status</td>
+        <td>VARCHAR(50), Not Null — status state (Submitted, Under Review, In Progress, Resolved, Rejected)</td>
+      </tr>
+      <tr>
+        <td class="col-colname">remark</td>
+        <td>TEXT, Not Null — official administrative remark or resolution notes</td>
+      </tr>
+      <tr>
+        <td class="col-colname">created_at</td>
+        <td>DATETIME, Not Null, Default CURRENT_TIMESTAMP</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 6. Page List -->
+  <h2 class="section-title">6. Page List</h2>
+  <p class="body-desc" style="margin-bottom: 4px;">
+    The following table outlines all system interfaces, their intended audience, primary function, and current implementation status in the codebase:
+  </p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-page">Page / Screen</th>
+        <th class="col-role">Accessible By</th>
+        <th>Purpose</th>
+        <th class="col-status">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-num">1</td>
+        <td class="col-page">Landing Page (<code>index.php</code>)</td>
+        <td class="col-role">Public</td>
+        <td>System introduction, workflow showcase, and role-based entry links</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">2</td>
+        <td class="col-page">Student Sign In (<code>auth/login.php</code>)</td>
+        <td class="col-role">Public</td>
+        <td>Student authentication with email, password verification, and CSRF check</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">3</td>
+        <td class="col-page">Admin Sign In (<code>auth/admin_login.php</code>)</td>
+        <td class="col-role">Public</td>
+        <td>Dedicated administrative portal sign in with admin role validation</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">4</td>
+        <td class="col-page">Register (<code>auth/register.php</code>)</td>
+        <td class="col-role">Public</td>
+        <td>Account registration with department dropdown and password validation</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">5</td>
+        <td class="col-page">Sign Out (<code>auth/logout.php</code>)</td>
+        <td class="col-role">Student / Admin</td>
+        <td>Terminates session, deletes cookie, and redirects to login</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">6</td>
+        <td class="col-page">Student Dashboard (<code>student/dashboard.php</code>)</td>
+        <td class="col-role">Student</td>
+        <td>Personal metrics (Total, Pending, In Progress, Resolved), rate %, recent tickets</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">7</td>
+        <td class="col-page">Admin Dashboard (<code>admin/dashboard.php</code>)</td>
+        <td class="col-role">Admin</td>
+        <td>Campus-wide KPI counters, active triage queue, 7-day activity chart</td>
+        <td class="col-status"><span class="badge badge-implemented">Implemented</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">8</td>
+        <td class="col-page">Submit Complaint (<code>student/submit_complaint.php</code>)</td>
+        <td class="col-role">Student</td>
+        <td>Grievance submission form with category, location, and attachment upload</td>
+        <td class="col-status"><span class="badge badge-partial">Partially Impl.</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">9</td>
+        <td class="col-page">My Complaints (<code>student/complaints.php</code>)</td>
+        <td class="col-role">Student</td>
+        <td>Searchable, filterable list of student's own submitted complaints</td>
+        <td class="col-status"><span class="badge badge-planned">Planned</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">10</td>
+        <td class="col-page">Complaint Detail (<code>student/complaint_details.php</code>)</td>
+        <td class="col-role">Student / Admin</td>
+        <td>Complete issue details and chronological timeline of administrative remarks</td>
+        <td class="col-status"><span class="badge badge-planned">Planned</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">11</td>
+        <td class="col-page">Student Profile (<code>student/profile.php</code>)</td>
+        <td class="col-role">Student</td>
+        <td>View student ID, department info, and update password / contact info</td>
+        <td class="col-status"><span class="badge badge-partial">Partially Impl.</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">12</td>
+        <td class="col-page">All Complaints (<code>admin/complaints/list.php</code>)</td>
+        <td class="col-role">Admin</td>
+        <td>Master campus grievances listing with category, department &amp; status filters</td>
+        <td class="col-status"><span class="badge badge-planned">Planned</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">13</td>
+        <td class="col-page">Admin Review (<code>admin/complaints/detail.php</code>)</td>
+        <td class="col-role">Admin</td>
+        <td>Inspect complaint details, review attached evidence, and enter remarks</td>
+        <td class="col-status"><span class="badge badge-planned">Planned</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">14</td>
+        <td class="col-page">Update Status (<code>admin/complaints/update_status.php</code>)</td>
+        <td class="col-role">Admin</td>
+        <td>Backend handler saving status transition and logging timeline record</td>
+        <td class="col-status"><span class="badge badge-planned">Planned</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">15</td>
+        <td class="col-page">User Management (<code>admin/users.php</code>)</td>
+        <td class="col-role">Admin</td>
+        <td>Directory of registered students across departments with status controls</td>
+        <td class="col-status"><span class="badge badge-planned">Planned</span></td>
+      </tr>
+      <tr>
+        <td class="col-num">16</td>
+        <td class="col-page">Admin Profile (<code>admin/profile.php</code>)</td>
+        <td class="col-role">Admin</td>
+        <td>View administrator account details and manage credentials</td>
+        <td class="col-status"><span class="badge badge-partial">Partially Impl.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== PAGE 4 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- 7. File Structure -->
+  <h2 class="section-title" style="margin-top: 0;">7. File Structure</h2>
+  <p class="body-desc" style="margin-bottom: 6px;">
+    The project repository follows a modular, role-separated directory layout adhering to clean MVC-like separation of concerns. Below is the tree of main, relevant application files:
+  </p>
+
+  <pre class="file-tree">campus-resolve/
+│
+├── config/
+│   └── db_connect.php            <span class="comment"># MySQL database connection using PDO (prepared statements, utf8mb4)</span>
+│
+├── includes/
+│   ├── auth.php                  <span class="comment"># Session management, role guards (require_student, require_admin), CSRF</span>
+│   ├── helpers.php               <span class="comment"># HTML escaping, status badges, date formatters, departments list</span>
+│   ├── auth_check_student.php    <span class="comment"># Guard middleware for student area</span>
+│   ├── auth_check_admin.php      <span class="comment"># Guard middleware for admin area</span>
+│   ├── header.php                <span class="comment"># Common top navigation bar</span>
+│   ├── footer.php                <span class="comment"># Common document footer</span>
+│   ├── student-sidebar.php       <span class="comment"># Navigation sidebar for student workspace</span>
+│   └── admin-sidebar.php         <span class="comment"># Navigation sidebar for admin workspace</span>
+│
+├── assets/
+│   ├── css/
+│   │   └── styles.css            <span class="comment"># Central stylesheet (design tokens, components, responsive layout)</span>
+│   └── js/
+│       └── app.js                <span class="comment"># Client-side validation, UI interactions, and mobile menu toggle</span>
+│
+├── auth/
+│   ├── register.php              <span class="comment"># Student account registration with input validation</span>
+│   ├── login.php                 <span class="comment"># Student portal sign in</span>
+│   ├── admin_login.php           <span class="comment"># Dedicated administrator sign in</span>
+│   └── logout.php                <span class="comment"># Session destruction and sign out</span>
+│
+├── student/
+│   ├── dashboard.php             <span class="comment"># Student landing: KPI cards, resolution rate %, recent 5 complaints</span>
+│   ├── submit_complaint.php      <span class="comment"># Grievance submission form with evidence upload</span>
+│   ├── complaints.php            <span class="comment"># [Planned] Personal complaints listing and status filter</span>
+│   ├── complaint_details.php     <span class="comment"># [Planned] Detail view with chronological update timeline</span>
+│   └── profile.php               <span class="comment"># Student profile and contact settings</span>
+│
+├── admin/
+│   ├── dashboard.php             <span class="comment"># Operations dashboard: campus KPIs, 7-day chart, active queue</span>
+│   ├── complaints/
+│   │   ├── list.php              <span class="comment"># [Planned] Master campus complaints table with search &amp; filters</span>
+│   │   ├── detail.php            <span class="comment"># [Planned] Admin complaint inspection &amp; remark entry</span>
+│   │   └── update_status.php     <span class="comment"># [Planned] POST handler for status transitions &amp; update timeline</span>
+│   ├── users.php                 <span class="comment"># [Planned] Directory of registered students across departments</span>
+│   └── profile.php               <span class="comment"># Administrator profile management</span>
+│
+├── database/
+│   ├── schema.sql                <span class="comment"># DDL: users, complaints, complaint_updates tables</span>
+│   └── seed.sql                  <span class="comment"># Initial dataset: default admin, test students &amp; sample complaints</span>
+│
+├── uploads/
+│   └── complaints/               <span class="comment"># [Planned] Storage directory for uploaded complaint evidence</span>
+│
+└── index.php                     <span class="comment"># Public landing page: system overview and role entry</span></pre>
+
+</div>
+
+</body>
+</html>
