@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details Report — Campus Resolve (BCAC591)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1e40af;
+      --heading-color: #0f172a;
+      --text-color: #1e293b;
+      --muted-color: #475569;
+      --border-color: #cbd5e1;
+      --table-header-bg: #1e3a8a;
+      --table-row-alt: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-color);
+      background-color: #f1f5f9;
+      line-height: 1.45;
+      font-size: 12px;
+      padding: 20px 10px 40px;
+    }
+
+    /* Screen UI Header / Buttons */
+    .no-print {
+      display: block;
+    }
+
+    .action-banner {
+      max-width: 820px;
+      margin: 0 auto 16px auto;
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.22);
+    }
+
+    .banner-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .banner-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .banner-subtitle {
+      font-size: 11.5px;
+      color: #bfdbfe;
+      margin-top: 2px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background-color: #ffffff;
+      color: #1e3a8a;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      transition: all 0.18s ease;
+    }
+
+    .btn:hover {
+      background-color: #f8fafc;
+      transform: translateY(-1px);
+    }
+
+    .export-tips {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 11px;
+      color: #e0e7ff;
+    }
+
+    .floating-pdf-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1e3a8a;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 50px;
+      box-shadow: 0 4px 14px rgba(30, 58, 138, 0.35);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      z-index: 999;
+      transition: all 0.18s ease;
+    }
+
+    .floating-pdf-btn:hover {
+      background: #1d4ed8;
+      transform: scale(1.03);
+    }
+
+    /* Standardized 4-Page Layout */
+    .report-page {
+      max-width: 820px;
+      margin: 0 auto 20px auto;
+      background: #ffffff;
+      padding: 34px 44px 28px 44px;
+      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .page-footer-num {
+      text-align: right;
+      font-size: 10.5px;
+      color: #94a3b8;
+      margin-top: 12px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 5px;
+    }
+
+    /* College & Header Styling */
+    .header-banner {
+      text-align: center;
+      border-bottom: 2px solid #b45309;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .institution-name {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .department-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted-color);
+      margin-bottom: 2px;
+    }
+
+    .course-info {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted-color);
+      margin-bottom: 8px;
+    }
+
+    .report-main-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Section Typography */
+    h2.section-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 12px;
+      margin-bottom: 6px;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 2px;
+    }
+
+    p, li {
+      font-size: 11.5px;
+      color: #334155;
+      text-align: justify;
+      margin-bottom: 5px;
+      line-height: 1.42;
+    }
+
+    ul {
+      margin-left: 18px;
+      margin-bottom: 8px;
+    }
+
+    li {
+      margin-bottom: 3.5px;
+    }
+
+    li strong {
+      color: #0f172a;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 10px 0;
+      font-size: 10.5px;
+    }
+
+    th {
+      background-color: var(--table-header-bg);
+      color: #ffffff;
+      font-weight: 600;
+      text-align: left;
+      padding: 5px 8px;
+      border: 1px solid var(--table-header-bg);
+    }
+
+    td {
+      padding: 4px 8px;
+      border: 1px solid var(--border-color);
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    tr:nth-child(even) td {
+      background-color: var(--table-row-alt);
+    }
+
+    .table-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-top: 10px;
+      margin-bottom: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 9.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-implemented {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge-partial {
+      background-color: #fef3c7;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-planned {
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* File Tree */
+    pre.file-tree {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.8px;
+      line-height: 1.38;
+      color: #1e293b;
+      overflow-x: auto;
+      margin-top: 6px;
+      margin-bottom: 10px;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: #f1f5f9;
+      padding: 0.5px 3px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* Exact 4-Page Print & PDF Rules */
+    @page {
+      size: A4 portrait;
+      margin: 10mm 14mm 10mm 14mm;
+    }
+
+    @media print {
+      html, body {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 9.2pt;
+        line-height: 1.36;
+        color: #000000;
+      }
+
+      .no-print,
+      .action-banner,
+      .floating-pdf-btn,
+      .page-footer-num {
+        display: none !important;
+      }
+
+      .report-page {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        height: auto;
+      }
+
+      .report-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+
+      h2.section-title {
+        font-size: 11pt !important;
+        margin-top: 10px !important;
+        margin-bottom: 4px !important;
+        padding-bottom: 1px !important;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      .table-title {
+        font-size: 9pt !important;
+        margin-top: 8px !important;
+        margin-bottom: 2px !important;
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+
+      p, li {
+        font-size: 8.8pt !important;
+        line-height: 1.33 !important;
+        margin-bottom: 4px !important;
+      }
+
+      table {
+        margin: 5px 0 8px 0 !important;
+        font-size: 8.2pt !important;
+      }
+
+      th {
+        padding: 4px 6px !important;
+        background-color: #1e3a8a !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      td {
+        padding: 3.2px 6px !important;
+        line-height: 1.3 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      pre.file-tree {
+        font-size: 8pt !important;
+        line-height: 1.3 !important;
+        padding: 8px 10px !important;
+        margin: 4px 0 !important;
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .badge-implemented {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border: 1px solid #bbf7d0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .badge-partial {
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 1px solid #fde68a !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .badge-planned {
+        background-color: #f1f5f9 !important;
+        color: #475569 !important;
+        border: 1px solid #e2e8f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Action Bar (Hidden in PDF) -->
+  <div class="no-print action-banner">
+    <div class="banner-content">
+      <div>
+        <div class="banner-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          BCAC591 Semester Project Details Report (4 Pages)
+        </div>
+        <div class="banner-subtitle">
+          Techno Main Salt Lake &bull; Department of Computer Application (BCA) &bull; Semester V
+        </div>
+      </div>
+      <button type="button" onclick="window.print()" class="btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Save as PDF
+      </button>
+    </div>
+    <div class="export-tips">
+      <strong>PDF Setting:</strong> In print preview, choose <strong>Destination: Save as PDF</strong>, <strong>Paper size: A4</strong>, and check <strong>"Background graphics"</strong> so badges &amp; header bars retain colors. Formatted for exactly 4 pages.
+    </div>
+  </div>
+
+  <!-- Floating PDF button -->
+  <button type="button" onclick="window.print()" class="no-print floating-pdf-btn" title="Save this report as PDF">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+      <polyline points="7 10 12 15 17 10"></polyline>
+      <line x1="12" y1="15" x2="12" y2="3"></line>
+    </svg>
+    Save as PDF
+  </button>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="report-page" id="page-1">
+    <div class="header-banner">
+      <div class="institution-name">TECHNO MAIN SALT LAKE</div>
+      <div class="department-name">Department of Computer Application (BCA)</div>
+      <div class="course-info">BCAC591 — PHP with MySQL | Semester V</div>
+      <div class="report-main-title">PROJECT DETAILS REPORT</div>
+    </div>
+
+    <h2 class="section-title">1. Project Title</h2>
+    <p><strong>Campus Resolve — Student Complaint Management System</strong></p>
+
+    <h2 class="section-title">2. Problem Statement</h2>
+    <p>
+      Students frequently encounter facility, infrastructure, and equipment-related problems across campus — such as malfunctioning classroom fans, non-functional lab computers, water cooler breakdowns, and damaged lab equipment — but lack a structured, transparent mechanism to report them and track resolution. Traditional verbal or manual complaint processes often result in untracked tickets, lack of accountability, and zero visibility for students regarding repair timelines. Campus Resolve provides a centralized, role-based platform enabling students to report grievances with location details and monitor progress through an audit timeline, while campus administrators efficiently prioritize, investigate, update, and resolve complaints with verifiable accountability.
+    </p>
+
+    <h2 class="section-title">3. User Roles</h2>
+    <p>The system defines two distinct roles, fulfilling the BCAC591 project specification:</p>
+    <ul>
+      <li>
+        <strong>Student (Complainant)</strong> — Registers with student credentials and department; signs in to access a personal workspace dashboard; submits categorized complaints specifying location, description, and optional file attachments; monitors the real-time status and historical timeline of their own complaints; and manages their account profile.
+      </li>
+      <li>
+        <strong>Administrator (Campus Operations / Authority)</strong> — Authenticates via a separate administrative portal; oversees campus-wide operations through an analytics dashboard (reviewing pending queues, active tickets, resolution rates, and 7-day activity charts); reviews all submitted grievances across departments; updates ticket statuses (<em>Pending &rarr; In Progress / Under Review &rarr; Resolved / Rejected</em>) with official remarks; and monitors registered student accounts.
+      </li>
+    </ul>
+
+    <h2 class="section-title">4. Module List — Mapped to This Project</h2>
+    <p>Every mandatory module from the project notice, mapped specifically to this project's subject matter:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%;">#</th>
+          <th style="width: 22%;">Mandatory Module</th>
+          <th style="width: 56%;">How It Applies to Campus Resolve</th>
+          <th style="width: 17%;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td><strong>Authentication</strong></td>
+          <td>Student registration (<code>auth/register.php</code>) with 12 academic departments, separate Student Login (<code>auth/login.php</code>), separate Admin Login (<code>auth/admin_login.php</code>), and secure Sign Out (<code>auth/logout.php</code>). Passwords hashed using Bcrypt via <code>password_hash()</code>.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td><strong>Role-Based Access</strong></td>
+          <td>Two distinct roles (<code>student</code>, <code>admin</code>) enforced via session authentication and middleware guards (<code>includes/auth_check_student.php</code>, <code>includes/auth_check_admin.php</code>). Each role has its own dedicated dashboard, navigation sidebar, and isolated permissions.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td><strong>Dashboard</strong></td>
+          <td><strong>Student Dashboard</strong> (<code>student/dashboard.php</code>) shows real-time personal metrics (total, pending, in-progress, resolved, resolution rate %), time-aware greeting, and recent complaints table. <strong>Admin Dashboard</strong> (<code>admin/dashboard.php</code>) displays campus totals, pending action counts, registered student count, a 7-day complaint activity bar chart, and a "Needs Attention" queue.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td><strong>Core Entity CRUD</strong></td>
+          <td>The core entity is <strong>Complaint</strong> (Grievance Ticket). Students can create (submit grievances) and view their own tickets. Admins can view all campus grievances, update statuses, record official administrative remarks, and track resolution lifecycles.</td>
+          <td><span class="badge badge-partial">Partially Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td><strong>Listing Page</strong></td>
+          <td><strong>Student Complaints List</strong> (<code>student/complaints.php</code>) displays all tickets submitted by the logged-in student. <strong>Admin Complaints Register</strong> (<code>admin/complaints/list.php</code>) displays all institutional tickets with search (by complaint code, student name, or title) and filtering (by category and status).</td>
+          <td><span class="badge badge-partial">Partially Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td><strong>Detail View</strong></td>
+          <td>Dedicated screen for individual grievances (<code>student/complaint_details.php</code> and <code>admin/complaints/detail.php</code>) displaying complaint code, student metadata, category, location, full description, attachment, and chronological event history from <code>complaint_updates</code>.</td>
+          <td><span class="badge badge-partial">Partially Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td><strong>Status Workflow</strong></td>
+          <td>Every complaint moves through distinct sequential states: <em>Pending &rarr; In Progress / Under Review &rarr; Resolved (or Rejected)</em>. State transitions create audit log entries in <code>complaint_updates</code> along with administrator remarks. Only administrators can transition status.</td>
+          <td><span class="badge badge-partial">Partially Implemented</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="page-footer-num">Page 1 of 4</div>
+  </div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="report-page" id="page-2">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%;">#</th>
+          <th style="width: 22%;">Mandatory Module</th>
+          <th style="width: 56%;">How It Applies to Campus Resolve</th>
+          <th style="width: 17%;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>8</strong></td>
+          <td><strong>Admin Panel</strong></td>
+          <td>Dedicated administrative workspace featuring admin authentication, institutional KPIs, 7-day activity visual chart, high-priority ticket queue, all-complaints register, and user directory oversight.</td>
+          <td><span class="badge badge-partial">Partially Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td><strong>Form Validation</strong></td>
+          <td>Server-side validation in PHP verifies required fields, email formatting, department verification against <code>get_departments()</code>, password length and confirmation match, and CSRF token integrity via <code>validate_csrf()</code>. Client-side validation includes interactive password strength metering.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td><strong>Flash Messages</strong></td>
+          <td>Centralized session-based flash messaging (<code>set_flash()</code>, <code>get_flash()</code>) rendered dynamically as client-side animated toast notifications (<code>window.showToast()</code>) on sign-in, account creation, sign-out, or permission checks.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>11</strong></td>
+          <td><strong>Profile Management</strong></td>
+          <td>Student Profile (<code>student/profile.php</code>) and Admin Profile (<code>admin/profile.php</code>) interfaces to inspect account metadata (user code, institutional email, registered department) and update personal details.</td>
+          <td><span class="badge badge-partial">Partially Implemented</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Optional modules included, since they genuinely apply to this project:</strong></p>
+    <ul>
+      <li>
+        <strong>Basic Reports / Counts &amp; Analytics</strong> — Implemented on Admin and Student dashboards via dynamic SQL aggregations calculating complaint volumes by status, resolution percentage rates, student user totals, and a 7-day intake activity breakdown.
+      </li>
+      <li>
+        <strong>Audit Trail / Activity Timeline</strong> — Schema and seed implemented via <code>complaint_updates</code> table tracking historical status transitions, timestamped administrator remarks, and responsible admin IDs for complete transparency.
+      </li>
+      <li>
+        <strong>File / Evidence Upload (File Handling)</strong> — Planned feature supported by database schema (<code>attachment</code> column in <code>complaints</code>) and server storage (<code>uploads/complaints/</code>) allowing students to upload photo evidence of damaged items or facilities.
+      </li>
+    </ul>
+
+    <h2 class="section-title">5. Database Tables (Draft / Active Schema)</h2>
+    <p>The database <code>campus_resolve</code> is configured using MySQL with foreign key constraints and <code>utf8mb4</code> encoding:</p>
+
+    <div class="table-title">Table: users</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Column</th>
+          <th style="width: 75%;">Type / Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT, Primary Key, Auto Increment</td></tr>
+        <tr><td><code>user_code</code></td><td>VARCHAR(20), Unique <em>(e.g. 'ST-2016', 'AD-001')</em></td></tr>
+        <tr><td><code>name</code></td><td>VARCHAR(100), Not Null</td></tr>
+        <tr><td><code>email</code></td><td>VARCHAR(120), Unique, Not Null</td></tr>
+        <tr><td><code>password</code></td><td>VARCHAR(255), Not Null — stored using <code>password_hash()</code> (Bcrypt)</td></tr>
+        <tr><td><code>role</code></td><td>ENUM('student', 'admin'), Not Null, Default 'student'</td></tr>
+        <tr><td><code>department</code></td><td>VARCHAR(100), Default NULL <em>(enforces 12 institutional academic departments)</em></td></tr>
+        <tr><td><code>status</code></td><td>ENUM('active', 'inactive'), Not Null, Default 'active'</td></tr>
+        <tr><td><code>created_at</code></td><td>DATETIME, Default CURRENT_TIMESTAMP</td></tr>
+      </tbody>
+    </table>
+
+    <div class="table-title">Table: complaints</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Column</th>
+          <th style="width: 75%;">Type / Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT, Primary Key, Auto Increment</td></tr>
+        <tr><td><code>complaint_code</code></td><td>VARCHAR(20), Unique <em>(e.g. 'CR-1042')</em></td></tr>
+        <tr><td><code>user_id</code></td><td>INT, Foreign Key &rarr; users.id (ON DELETE CASCADE)</td></tr>
+        <tr><td><code>title</code></td><td>VARCHAR(200), Not Null</td></tr>
+        <tr><td><code>category</code></td><td>ENUM('Infrastructure', 'IT', 'Facilities', 'Laboratory', 'Other'), Not Null</td></tr>
+        <tr><td><code>location</code></td><td>VARCHAR(150), Not Null <em>(e.g. 'Block B · Room 204')</em></td></tr>
+        <tr><td><code>description</code></td><td>TEXT, Not Null</td></tr>
+        <tr><td><code>attachment</code></td><td>VARCHAR(255), Nullable <em>(relative path to uploaded evidence file)</em></td></tr>
+        <tr><td><code>status</code></td><td>ENUM('Pending', 'In Progress', 'Resolved', 'Rejected'), Default 'Pending'</td></tr>
+        <tr><td><code>created_at</code></td><td>DATETIME, Default CURRENT_TIMESTAMP</td></tr>
+        <tr><td><code>updated_at</code></td><td>DATETIME, Default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP</td></tr>
+      </tbody>
+    </table>
+    <div class="page-footer-num">Page 2 of 4</div>
+  </div>
+
+  <!-- ==================== PAGE 3 ==================== -->
+  <div class="report-page" id="page-3">
+    <div class="table-title" style="margin-top:0;">Table: complaint_updates</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Column</th>
+          <th style="width: 75%;">Type / Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>id</code></td><td>INT, Primary Key, Auto Increment</td></tr>
+        <tr><td><code>complaint_id</code></td><td>INT, Foreign Key &rarr; complaints.id (ON DELETE CASCADE)</td></tr>
+        <tr><td><code>admin_id</code></td><td>INT, Nullable, Foreign Key &rarr; users.id (ON DELETE SET NULL)</td></tr>
+        <tr><td><code>status</code></td><td>VARCHAR(50), Not Null <em>(e.g. 'Submitted', 'Under Review', 'In Progress', 'Resolved')</em></td></tr>
+        <tr><td><code>remark</code></td><td>TEXT, Not Null</td></tr>
+        <tr><td><code>created_at</code></td><td>DATETIME, Default CURRENT_TIMESTAMP</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title">6. Page List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%;">#</th>
+          <th style="width: 28%;">Page / Screen</th>
+          <th style="width: 15%;">Accessible By</th>
+          <th style="width: 38%;">Purpose</th>
+          <th style="width: 14%;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td><strong>Public Landing Page</strong><br><code>index.php</code></td>
+          <td>Public</td>
+          <td>Introduces the system, explains 3-step workflow, displays live tracking demo, and directs users to role sign-in.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td><strong>Student Sign In</strong><br><code>auth/login.php</code></td>
+          <td>Public</td>
+          <td>Student credential authentication with CSRF protection, password toggle, and session creation.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td><strong>Admin Sign In</strong><br><code>auth/admin_login.php</code></td>
+          <td>Public</td>
+          <td>Dedicated administrative authentication portal restricted strictly to accounts with <code>role = 'admin'</code>.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td><strong>Student Registration</strong><br><code>auth/register.php</code></td>
+          <td>Public</td>
+          <td>New student onboarding with academic department dropdown selection (12 departments), Bcrypt hashing, and auto user code.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td><strong>Sign Out Handler</strong><br><code>auth/logout.php</code></td>
+          <td>Authenticated</td>
+          <td>Safely destroys session, unsets session cookies, and redirects to login with flash confirmation.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td><strong>Student Dashboard</strong><br><code>student/dashboard.php</code></td>
+          <td>Student</td>
+          <td>Student workspace displaying personal KPI counters (total, pending, in-progress, resolved), resolution rate %, and recent complaints.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td><strong>Submit Complaint</strong><br><code>student/submit_complaint.php</code></td>
+          <td>Student</td>
+          <td>Form to lodge a new complaint specifying title, category dropdown, location, description, and file attachment.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td><strong>My Complaints Listing</strong><br><code>student/complaints.php</code></td>
+          <td>Student</td>
+          <td>Filterable and searchable table of all grievances submitted by the logged-in student.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td><strong>Complaint Detail View</strong><br><code>student/complaint_details.php</code></td>
+          <td>Student</td>
+          <td>Comprehensive single complaint view showing issue breakdown, location, evidence, and chronological status timeline.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td><strong>Student Profile</strong><br><code>student/profile.php</code></td>
+          <td>Student</td>
+          <td>Profile management page allowing students to view credentials and update their name and department.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>11</strong></td>
+          <td><strong>Admin Dashboard</strong><br><code>admin/dashboard.php</code></td>
+          <td>Admin</td>
+          <td>Centralized administrative analytics hub with campus-wide statistics, resolution percentage, 7-day intake chart, and "Needs Attention" queue.</td>
+          <td><span class="badge badge-implemented">Implemented</span></td>
+        </tr>
+        <tr>
+          <td><strong>12</strong></td>
+          <td><strong>All Complaints Register</strong><br><code>admin/complaints/list.php</code></td>
+          <td>Admin</td>
+          <td>Institutional complaints management table with search, category filtering, and status filtering.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>13</strong></td>
+          <td><strong>Admin Complaint Review</strong><br><code>admin/complaints/detail.php</code></td>
+          <td>Admin</td>
+          <td>Detailed ticket inspection screen with controls to transition status and enter official administrative remarks.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>14</strong></td>
+          <td><strong>Update Status Action</strong><br><code>admin/complaints/update_status.php</code></td>
+          <td>Admin</td>
+          <td>POST handler updating complaint status and creating an audit record in <code>complaint_updates</code>.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>15</strong></td>
+          <td><strong>User Directory</strong><br><code>admin/users.php</code></td>
+          <td>Admin</td>
+          <td>Overview of registered students across departments with account status and ticket counts.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+        <tr>
+          <td><strong>16</strong></td>
+          <td><strong>Admin Profile</strong><br><code>admin/profile.php</code></td>
+          <td>Admin</td>
+          <td>Administrative profile and security configuration screen.</td>
+          <td><span class="badge badge-planned">Planned</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="page-footer-num">Page 3 of 4</div>
+  </div>
+
+  <!-- ==================== PAGE 4 ==================== -->
+  <div class="report-page" id="page-4">
+    <h2 class="section-title" style="margin-top:0;">7. File Structure</h2>
+    <pre class="file-tree">campus-resolve/
+│
+├── config/
+│   └── db_connect.php              # PDO MySQL connection with error handling & auto-setup
+│
+├── includes/
+│   ├── auth.php                    # Session handling, role helpers, and CSRF token utilities
+│   ├── auth_check_student.php      # Access guard: enforces authenticated student role
+│   ├── auth_check_admin.php        # Access guard: enforces authenticated administrator role
+│   ├── helpers.php                 # Utilities: XSS escaping (e()), status badges, get_departments()
+│   ├── header.php                  # Shared top app navigation bar with user avatar & breadcrumb
+│   ├── footer.php                  # Shared app footer and dynamic toast notification trigger
+│   ├── student-sidebar.php         # Navigation sidebar for student workspace
+│   └── admin-sidebar.php           # Navigation sidebar for administrative workspace
+│
+├── assets/
+│   ├── css/
+│   │   └── styles.css              # Application design system: tokens, typography, layouts, badges
+│   └── js/
+│       └── app.js                  # Client utilities: mobile nav, toast alerts, password toggle
+│
+├── icons.svg                       # Shared SVG icon symbol sprite (check, bell, chevron, etc.)
+│
+├── auth/
+│   ├── register.php                # Student account registration with 12-department dropdown
+│   ├── login.php                   # Student sign-in portal with session initialization
+│   ├── admin_login.php             # Dedicated administrative sign-in portal
+│   └── logout.php                  # Secure session destruction and redirect
+│
+├── student/
+│   ├── dashboard.php               # Student home: personal metrics, recent tickets, quick links
+│   ├── submit_complaint.php        # [Planned] Grievance submission form with evidence upload
+│   ├── complaints.php              # [Planned] Student's personal complaints listing & filter
+│   ├── complaint_details.php       # [Planned] Detail view with chronological update timeline
+│   └── profile.php                 # [Planned] Student profile and department update
+│
+├── admin/
+│   ├── dashboard.php               # Operations dashboard: campus KPIs, 7-day chart, active queue
+│   ├── complaints/
+│   │   ├── list.php                # [Planned] All campus complaints with search & filters
+│   │   ├── detail.php              # [Planned] Admin complaint inspection & remark entry
+│   │   └── update_status.php       # [Planned] POST handler for status transitions & updates
+│   ├── users.php                   # [Planned] Student user directory across departments
+│   └── profile.php                 # [Planned] Admin profile management
+│
+├── database/
+│   ├── schema.sql                  # DDL: users, complaints, complaint_updates tables
+│   └── seed.sql                    # Seed dataset: initial admin, sample students & complaints
+│
+├── uploads/
+│   └── complaints/                 # [Planned] Storage folder for uploaded complaint evidence
+│
+└── index.php                       # Public landing page with system walkthrough & role entry</pre>
+
+    <div class="page-footer-num">Page 4 of 4</div>
+  </div>
+
+</body>
+</html>

@@ -35,6 +35,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? LIMIT 1");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch();
+        if (!$user && str_ends_with(strtolower($email), '@admin.com')) {
+            $local = explode('@', strtolower($email))[0];
+            $first = explode('.', $local)[0];
+            $stmtAlt = $pdo->prepare("SELECT * FROM `users` WHERE `email` = ? LIMIT 1");
+            $stmtAlt->execute([$first . '@admin.com']);
+            $user = $stmtAlt->fetch();
+        }
 
                 if ($user && password_verify($password, $user['password'])) {
                     if ($user['role'] !== 'admin') {
