@@ -218,7 +218,7 @@ $crumb_title = 'Dashboard';
                   <h2>Needs attention</h2>
                   <p>Recent campus concerns requiring action.</p>
                 </div>
-                <a class="text-button" href="<?= $base ?>admin/complaints/list.php">
+                <a class="text-button" href="<?= $base ?>admin/complaints.php">
                   View all
                   <svg class="icon" width="18" height="18">
                     <use href="<?= $base ?>icons.svg#i-arrow" />
