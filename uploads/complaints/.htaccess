@@ -1,0 +1,2 @@
+# Attachments must be served through attachment.php after authorization.
+Require all denied

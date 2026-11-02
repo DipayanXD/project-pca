@@ -134,6 +134,8 @@ $flash = get_flash();
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Manage <?= e($complaint['complaint_code']) ?> — Campus Resolve</title>
     <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css" />
+    <link rel="stylesheet" href="<?= $base ?>assets/css/attachment-preview.css" />
+    <script src="<?= $base ?>assets/js/attachment-preview.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -197,10 +199,7 @@ $flash = get_flash();
                       <div style="grid-column: 1 / -1;">
                         <dt>Attachment</dt>
                         <dd>
-                          <a class="view-link" href="<?= $base . e($complaint['attachment']) ?>" target="_blank" rel="noopener">
-                            <svg class="icon" width="16" height="16"><use href="<?= $base ?>icons.svg#i-paperclip" /></svg>
-                            View / Download Attachment (<?= e(basename($complaint['attachment'])) ?>)
-                          </a>
+                          <?php require __DIR__ . '/../includes/attachment-preview.php'; ?>
                         </dd>
                       </div>
                     <?php endif; ?>

@@ -6,7 +6,7 @@
  * Features:
  *  - Clear, straightforward PHP & MySQL code structure (easy to read & maintain)
  *  - Complete server-side input validation and error feedback
- *  - Secure file attachment handling (PDF, JPG, PNG up to 10 MB)
+ *  - Secure file attachment handling (PDF, JPG, JPEG, PNG, WebP up to 10 MB)
  *  - Transactional database inserts/updates with automatic timeline tracking
  *  - Draft saving via localStorage matching prototype-4 design
  */
@@ -144,12 +144,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $allowedMimes = [
                 'application/pdf' => 'pdf',
                 'image/jpeg'      => 'jpg',
-                'image/png'       => 'png'
+                'image/png'       => 'png',
+                'image/webp'      => 'webp'
             ];
 
             if (!isset($allowedMimes[$mime])) {
-                $fieldErrors['attachment'] = 'Only PDF, JPG, or PNG files are accepted.';
-                $errors[] = 'Attachment must be a valid PDF, JPG, or PNG file.';
+                $fieldErrors['attachment'] = 'Only PDF, JPG, JPEG, PNG, or WebP files are accepted.';
+                $errors[] = 'Attachment must be a valid PDF, JPG, JPEG, PNG, or WebP file.';
             } else {
                 // Prepare upload folder and unique filename
                 $uploadDir = dirname(__DIR__) . '/uploads/complaints';
@@ -427,7 +428,7 @@ $flash = get_flash();
                       type="file"
                       name="attachment"
                       id="attachment-input"
-                      accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                      accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
                       aria-label="Add attachment"
                     />
                     <span>
@@ -445,9 +446,9 @@ $flash = get_flash();
                       </strong>
                       <small id="attachment-hint">
                         <?php if (!empty($existing['attachment']) && empty($removeAttachment)): ?>
-                          Click to replace with a new PDF, JPG, or PNG up to 10 MB
+                          Click to replace with a new PDF, JPG, JPEG, PNG, or WebP up to 10 MB
                         <?php else: ?>
-                          Optional · PDF, JPG, or PNG up to 10 MB
+                          Optional · PDF, JPG, JPEG, PNG, or WebP up to 10 MB
                         <?php endif; ?>
                       </small>
                     </div>
@@ -457,7 +458,7 @@ $flash = get_flash();
 
                   <?php if (!empty($existing['attachment'])): ?>
                     <div style="margin-top: 8px; font-size: 12px; display: flex; align-items: center; gap: 16px;">
-                      <a href="<?= $base . e($existing['attachment']) ?>" target="_blank" rel="noopener" class="view-link">
+                      <a href="<?= $base ?>attachment.php?id=<?= (int)$existing['id'] ?>" target="_blank" rel="noopener" class="view-link">
                         View current attachment
                         <svg class="icon" width="14" height="14"><use href="<?= $base ?>icons.svg#i-arrow" /></svg>
                       </a>
