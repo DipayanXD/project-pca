@@ -45,10 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $search = trim((string)($_GET['q'] ?? ''));
 $categoryFilter = (string)($_GET['category'] ?? '');
 $statusFilter = (string)($_GET['status'] ?? '');
+$sortFilter = (string)($_GET['sort'] ?? 'new');
+
 $sql = 'SELECT `id`, `complaint_code`, `title`, `category`, `location`, `status`, `created_at` FROM `complaints` WHERE `user_id` = ?';
 $params = [$userId];
 if ($search !== '') {
-    $sql .= ' AND (`complaint_code` LIKE ? OR `title` LIKE ?)';
+    $sql .= ' AND (`complaint_code` LIKE ? OR `title` LIKE ? OR `location` LIKE ?)';
+    $params[] = '%' . $search . '%';
     $params[] = '%' . $search . '%';
     $params[] = '%' . $search . '%';
 }
@@ -60,7 +63,15 @@ if (in_array($statusFilter, $statuses, true)) {
     $sql .= ' AND `status` = ?';
     $params[] = $statusFilter;
 }
-$sql .= ' ORDER BY `created_at` DESC';
+
+if ($sortFilter === 'old') {
+    $sql .= ' ORDER BY `created_at` ASC';
+} elseif ($sortFilter === 'status') {
+    $sql .= ' ORDER BY `status` ASC, `created_at` DESC';
+} else {
+    $sql .= ' ORDER BY `created_at` DESC';
+}
+
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $complaints = $stmt->fetchAll();
@@ -72,7 +83,7 @@ $crumb_title = 'My Complaints';
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>My Complaints — Campus Resolve</title>
     <link rel="stylesheet" href="<?= $base ?>assets/css/styles.css" />
   </head>
@@ -100,78 +111,115 @@ $crumb_title = 'My Complaints';
           <?php endif; ?>
 
           <section class="panel table-panel">
-            <form class="table-controls" method="get">
+            <div class="table-controls">
               <label class="search-input">
                 <svg class="icon"><use href="<?= $base ?>icons.svg#i-search" /></svg>
-                <input name="q" value="<?= e($search) ?>" placeholder="Search by title or ID" aria-label="Search complaints" />
+                <input
+                  id="complaint-search"
+                  name="q"
+                  value="<?= e($search) ?>"
+                  placeholder="Search by title or ID"
+                  aria-label="Search complaints"
+                />
               </label>
               <div class="filter-row">
-                <select name="status" aria-label="Filter by status">
+                <select
+                  name="status"
+                  data-complaint-filter="status"
+                  aria-label="Filter by status"
+                >
                   <option value="">All statuses</option>
                   <?php foreach ($statuses as $status): ?>
                     <option value="<?= e($status) ?>" <?= $statusFilter === $status ? 'selected' : '' ?>><?= e($status) ?></option>
                   <?php endforeach; ?>
                 </select>
-                <select name="category" aria-label="Filter by category">
+                <select
+                  name="category"
+                  data-complaint-filter="category"
+                  aria-label="Filter by category"
+                >
                   <option value="">All categories</option>
                   <?php foreach ($categories as $category): ?>
                     <option value="<?= e($category) ?>" <?= $categoryFilter === $category ? 'selected' : '' ?>><?= e($category) ?></option>
                   <?php endforeach; ?>
                 </select>
-                <button class="button secondary small" type="submit">Filter</button>
+                <select name="sort" data-complaint-sort aria-label="Sort complaints">
+                  <option value="new" <?= $sortFilter === 'new' ? 'selected' : '' ?>>Newest first</option>
+                  <option value="old" <?= $sortFilter === 'old' ? 'selected' : '' ?>>Oldest first</option>
+                  <option value="status" <?= $sortFilter === 'status' ? 'selected' : '' ?>>Status</option>
+                </select>
               </div>
-            </form>
+            </div>
+            <div class="loading-line is-hidden" aria-hidden="true"></div>
             <div class="responsive-table">
-              <?php if ($complaints): ?>
-                <table id="complaint-table">
-                  <thead>
-                    <tr><th>ID</th><th>Complaint</th><th>Category</th><th>Date</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($complaints as $complaint): ?>
-                      <tr data-status="<?= e($complaint['status']) ?>" data-category="<?= e($complaint['category']) ?>" data-date="<?= (int)strtotime($complaint['created_at']) ?>">
-                        <td data-label="ID">
-                          <a class="id-link" href="<?= $base ?>student/complaint_details.php?id=<?= (int)$complaint['id'] ?>">
-                            <?= e($complaint['complaint_code']) ?>
+              <table id="complaint-table" class="<?= empty($complaints) ? 'is-hidden' : '' ?>">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Complaint</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($complaints as $complaint): ?>
+                    <tr
+                      data-status="<?= e($complaint['status']) ?>"
+                      data-category="<?= e($complaint['category']) ?>"
+                      data-date="<?= (int)strtotime($complaint['created_at']) ?>"
+                    >
+                      <td data-label="ID">
+                        <a class="id-link" href="<?= $base ?>student/complaint_details.php?id=<?= (int)$complaint['id'] ?>">
+                          <?= e($complaint['complaint_code']) ?>
+                        </a>
+                      </td>
+                      <td data-label="Complaint">
+                        <a href="<?= $base ?>student/complaint_details.php?id=<?= (int)$complaint['id'] ?>" style="text-decoration: none; color: inherit;">
+                          <strong><?= e($complaint['title']) ?></strong>
+                        </a>
+                        <small><?= e($complaint['location']) ?></small>
+                      </td>
+                      <td data-label="Category"><?= e($complaint['category']) ?></td>
+                      <td data-label="Date"><?= e(format_date($complaint['created_at'], true)) ?></td>
+                      <td data-label="Status"><?= status_badge($complaint['status']) ?></td>
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                          <a class="view-link" href="<?= $base ?>student/complaint_details.php?id=<?= (int)$complaint['id'] ?>">
+                            View
+                            <svg class="icon" width="14" height="14"><use href="<?= $base ?>icons.svg#i-arrow" /></svg>
                           </a>
-                        </td>
-                        <td data-label="Complaint">
-                          <a href="<?= $base ?>student/complaint_details.php?id=<?= (int)$complaint['id'] ?>" style="text-decoration: none; color: inherit;">
-                            <strong><?= e($complaint['title']) ?></strong>
-                          </a>
-                          <small><?= e($complaint['location']) ?></small>
-                        </td>
-                        <td data-label="Category"><?= e($complaint['category']) ?></td>
-                        <td data-label="Date"><?= e(format_date($complaint['created_at'], true)) ?></td>
-                        <td data-label="Status"><?= status_badge($complaint['status']) ?></td>
-                        <td>
-                          <div style="display: flex; align-items: center; gap: 8px;">
-                            <a class="view-link" href="<?= $base ?>student/complaint_details.php?id=<?= (int)$complaint['id'] ?>">
-                              View
-                              <svg class="icon" width="14" height="14"><use href="<?= $base ?>icons.svg#i-arrow" /></svg>
-                            </a>
-                            <?php if ($complaint['status'] === 'Pending'): ?>
-                              <a class="view-link" style="color: #4b5563;" href="<?= $base ?>student/submit_complaint.php?id=<?= (int)$complaint['id'] ?>">Edit</a>
-                              <form method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this pending complaint? This action cannot be undone.');">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="complaint_id" value="<?= (int)$complaint['id'] ?>" />
-                                <button class="view-link" style="color: var(--red); cursor: pointer;" type="submit">Delete</button>
-                              </form>
-                            <?php endif; ?>
-                          </div>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
+                          <?php if ($complaint['status'] === 'Pending'): ?>
+                            <a class="view-link" style="color: #4b5563;" href="<?= $base ?>student/submit_complaint.php?id=<?= (int)$complaint['id'] ?>">Edit</a>
+                            <form method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this pending complaint? This action cannot be undone.');">
+                              <?= csrf_field() ?>
+                              <input type="hidden" name="complaint_id" value="<?= (int)$complaint['id'] ?>" />
+                              <button class="view-link" style="color: var(--red); cursor: pointer;" type="submit">Delete</button>
+                            </form>
+                          <?php endif; ?>
+                        </div>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-empty <?= !empty($complaints) ? 'is-hidden' : '' ?>" id="complaint-empty">
+              <svg class="icon" width="28" height="28">
+                <use href="<?= $base ?>icons.svg#i-search" />
+              </svg>
+              <h3><?= $search || $categoryFilter || $statusFilter ? 'No matching complaints' : 'No complaints recorded' ?></h3>
+              <p><?= $search || $categoryFilter || $statusFilter ? 'Try another search term or clear a filter.' : 'When you submit a complaint, it will appear here.' ?></p>
+              <?php if ($search || $categoryFilter || $statusFilter): ?>
+                <button class="button secondary" type="button" data-clear-filters>
+                  Clear filters
+                </button>
               <?php else: ?>
-                <div class="table-empty">
-                  <h3><?= $search || $categoryFilter || $statusFilter ? 'No matching complaints' : 'No complaints submitted yet' ?></h3>
-                  <p><?= $search || $categoryFilter || $statusFilter ? 'Try changing your search or filters.' : 'Submit a complaint to start tracking a campus issue.' ?></p>
-                  <?php if (!$search && !$categoryFilter && !$statusFilter): ?>
-                    <a class="button primary small" href="<?= $base ?>student/submit_complaint.php">Submit a complaint</a>
-                  <?php endif; ?>
-                </div>
+                <a class="button primary small" href="<?= $base ?>student/submit_complaint.php">
+                  Submit a complaint
+                </a>
               <?php endif; ?>
             </div>
           </section>
@@ -179,5 +227,3 @@ $crumb_title = 'My Complaints';
       </div>
     </div>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
-  </body>
-</html>

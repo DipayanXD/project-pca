@@ -200,88 +200,137 @@ function render_complaint_status(string $status): string {
 
           <!-- Complaints Table Panel -->
           <section class="panel table-panel">
+            <div class="table-controls">
+              <label class="search-input">
+                <svg class="icon"><use href="<?= $base ?>icons.svg#i-search" /></svg>
+                <input
+                  id="complaint-search"
+                  placeholder="Search by title, student, or ID"
+                  aria-label="Search complaints"
+                />
+              </label>
+              <div class="filter-row">
+                <select
+                  data-complaint-filter="status"
+                  aria-label="Filter by status"
+                >
+                  <option value="">All statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+                <select
+                  data-complaint-filter="category"
+                  aria-label="Filter by category"
+                >
+                  <option value="">All categories</option>
+                  <option value="Infrastructure">Infrastructure</option>
+                  <option value="IT">IT</option>
+                  <option value="Facilities">Facilities</option>
+                  <option value="Laboratory">Laboratory</option>
+                  <option value="Other">Other</option>
+                </select>
+                <select data-complaint-sort aria-label="Sort complaints">
+                  <option value="new">Newest first</option>
+                  <option value="old">Oldest first</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+            </div>
+            <div class="loading-line is-hidden" aria-hidden="true"></div>
+
             <div class="responsive-table">
-              <?php if (!empty($complaints)): ?>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Complaint ID</th>
-                      <th>Student Name</th>
-                      <th>Complaint Title</th>
-                      <th>Category</th>
-                      <th>Submission Date</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($complaints as $c): 
-                      $detailUrl = get_details_page_url((int)$c['id']);
-                      $curStatus = $c['status'];
-                    ?>
-                      <tr data-complaint-id="<?= (int)$c['id'] ?>">
-                        <td data-label="Complaint ID">
-                          <a class="id-link" href="<?= e($detailUrl) ?>">
-                            <?= e($c['complaint_code']) ?>
-                          </a>
-                        </td>
-                        <td data-label="Student Name">
-                          <strong><?= e($c['student_name']) ?></strong>
-                          <small><?= e($c['student_email'] ?: $c['student_code']) ?></small>
-                        </td>
-                        <td data-label="Complaint Title">
+              <table id="complaint-table" class="<?= empty($complaints) ? 'is-hidden' : '' ?>">
+                <thead>
+                  <tr>
+                    <th>Complaint ID</th>
+                    <th>Student Name</th>
+                    <th>Complaint Title</th>
+                    <th>Category</th>
+                    <th>Submission Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($complaints as $c): 
+                    $detailUrl = get_details_page_url((int)$c['id']);
+                    $curStatus = $c['status'];
+                  ?>
+                    <tr
+                      data-complaint-id="<?= (int)$c['id'] ?>"
+                      data-status="<?= e($c['status']) ?>"
+                      data-category="<?= e($c['category']) ?>"
+                      data-date="<?= (int)strtotime($c['created_at']) ?>"
+                    >
+                      <td data-label="Complaint ID">
+                        <a class="id-link" href="<?= e($detailUrl) ?>">
+                          <?= e($c['complaint_code']) ?>
+                        </a>
+                      </td>
+                      <td data-label="Student Name">
+                        <strong><?= e($c['student_name']) ?></strong>
+                        <small><?= e($c['student_email'] ?: $c['student_code']) ?></small>
+                      </td>
+                      <td data-label="Complaint Title">
+                        <a href="<?= e($detailUrl) ?>" style="text-decoration: none; color: inherit;">
                           <strong><?= e($c['title']) ?></strong>
-                          <small><?= e($c['location']) ?></small>
-                        </td>
-                        <td data-label="Category">
-                          <?= e($c['category']) ?>
-                        </td>
-                        <td data-label="Submission Date">
-                          <?= e(format_date($c['created_at'], true)) ?>
-                        </td>
-                        <td data-label="Status">
-                          <?= render_complaint_status($curStatus) ?>
-                        </td>
-                        <td data-label="Action">
-                          <div class="action-cluster">
-                            <?php if ($detailUrl !== '#'): ?>
-                              <a class="button small secondary view-link" href="<?= e($detailUrl) ?>">
-                                View
-                                <svg class="icon" width="14" height="14">
-                                  <use href="<?= $base ?>icons.svg#i-arrow" />
-                                </svg>
-                              </a>
-                            <?php endif; ?>
-                            <form method="POST" action="complaints.php" class="status-form">
-                              <?= csrf_field() ?>
-                              <input type="hidden" name="complaint_id" value="<?= (int)$c['id'] ?>" />
-                              <select name="status" class="status-select" aria-label="Update status for <?= e($c['complaint_code']) ?>">
-                                <option value="Pending" <?= ($curStatus === 'Pending') ? 'selected' : '' ?>>Pending</option>
-                                <option value="In Progress" <?= ($curStatus === 'In Progress' || $curStatus === 'Approved') ? 'selected' : '' ?>>In Progress</option>
-                                <option value="Resolved" <?= ($curStatus === 'Resolved' || $curStatus === 'Completed') ? 'selected' : '' ?>>Resolved</option>
-                                <option value="Rejected" <?= ($curStatus === 'Rejected') ? 'selected' : '' ?>>Rejected</option>
-                              </select>
-                              <button type="submit" class="button small primary">
-                                Update
-                              </button>
-                            </form>
-                          </div>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
-              <?php else: ?>
-                <div class="table-empty">
-                  <h3>No complaints recorded</h3>
-                  <p>There are currently no student complaints submitted in the database.</p>
-                </div>
-              <?php endif; ?>
+                        </a>
+                        <small><?= e($c['location']) ?></small>
+                      </td>
+                      <td data-label="Category">
+                        <?= e($c['category']) ?>
+                      </td>
+                      <td data-label="Submission Date">
+                        <?= e(format_date($c['created_at'], true)) ?>
+                      </td>
+                      <td data-label="Status">
+                        <?= render_complaint_status($curStatus) ?>
+                      </td>
+                      <td data-label="Action">
+                        <div class="action-cluster">
+                          <?php if ($detailUrl !== '#'): ?>
+                            <a class="button small secondary view-link" href="<?= e($detailUrl) ?>">
+                              View
+                              <svg class="icon" width="14" height="14">
+                                <use href="<?= $base ?>icons.svg#i-arrow" />
+                              </svg>
+                            </a>
+                          <?php endif; ?>
+                          <form method="POST" action="complaints.php" class="status-form">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="complaint_id" value="<?= (int)$c['id'] ?>" />
+                            <select name="status" class="status-select" aria-label="Update status for <?= e($c['complaint_code']) ?>">
+                              <option value="Pending" <?= ($curStatus === 'Pending') ? 'selected' : '' ?>>Pending</option>
+                              <option value="In Progress" <?= ($curStatus === 'In Progress' || $curStatus === 'Approved') ? 'selected' : '' ?>>In Progress</option>
+                              <option value="Resolved" <?= ($curStatus === 'Resolved' || $curStatus === 'Completed') ? 'selected' : '' ?>>Resolved</option>
+                              <option value="Rejected" <?= ($curStatus === 'Rejected') ? 'selected' : '' ?>>Rejected</option>
+                            </select>
+                            <button type="submit" class="button small primary">
+                              Update
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-empty <?= !empty($complaints) ? 'is-hidden' : '' ?>" id="complaint-empty">
+              <svg class="icon" width="28" height="28">
+                <use href="<?= $base ?>icons.svg#i-search" />
+              </svg>
+              <h3>No matching complaints</h3>
+              <p>Try another search term or clear a filter.</p>
+              <button class="button secondary" type="button" data-clear-filters>
+                Clear filters
+              </button>
             </div>
           </section>
         </main>
       </div>
     </div>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
-  </body>
-</html>

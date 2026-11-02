@@ -270,9 +270,7 @@ $crumb_title = 'Dashboard';
                     </thead>
                     <tbody>
                       <?php foreach ($recentComplaints as $c): 
-                        $detailUrl = file_exists(__DIR__ . '/complaints/detail.php') 
-                            ? $base . 'admin/complaints/detail.php?id=' . (int)$c['id'] 
-                            : $base . 'admin/complaints.php';
+                        $detailUrl = $base . 'admin/complaint_details.php?id=' . (int)$c['id'];
                       ?>
                         <tr>
                           <td data-label="ID">
@@ -285,7 +283,9 @@ $crumb_title = 'Dashboard';
                             <small><?= e($c['student_email']) ?></small>
                           </td>
                           <td data-label="Complaint">
-                            <strong><?= e($c['title']) ?></strong>
+                            <a href="<?= $detailUrl ?>" style="text-decoration: none; color: inherit;">
+                              <strong><?= e($c['title']) ?></strong>
+                            </a>
                             <small><?= e($c['location']) ?></small>
                           </td>
                           <td data-label="Category"><?= e($c['category']) ?></td>
@@ -313,5 +313,3 @@ $crumb_title = 'Dashboard';
       </div>
     </div>
     <?php require __DIR__ . '/../includes/footer.php'; ?>
-  </body>
-</html>

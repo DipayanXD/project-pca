@@ -288,5 +288,3 @@ $flash = get_flash();
     </div>
 
     <?php require __DIR__ . '/../includes/footer.php'; ?>
-  </body>
-</html>

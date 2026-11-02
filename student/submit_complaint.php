@@ -232,17 +232,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // INSERT New Complaint
                 // -------------------------------------------------------------
                 // Generate next readable complaint code (e.g. CR-1043)
-                $maxNum = 1040;
-                $codeStmt = $pdo->query("SELECT `complaint_code` FROM `complaints` WHERE `complaint_code` REGEXP '^CR-[0-9]+$' ORDER BY `id` DESC LIMIT 10");
-                while ($c = $codeStmt->fetch()) {
-                    if (preg_match('/^CR-(\d+)$/', $c['complaint_code'], $m)) {
-                        $num = (int)$m[1];
-                        if ($num > $maxNum) {
-                            $maxNum = $num;
-                        }
-                    }
-                }
-                $nextCode = 'CR-' . ($maxNum + 1);
+                $codeStmt = $pdo->query("SELECT COALESCE(MAX(CAST(SUBSTRING(complaint_code, 4) AS UNSIGNED)), 1040) AS max_num FROM `complaints` WHERE `complaint_code` REGEXP '^CR-[0-9]+$'");
+                $maxNum = (int)($codeStmt->fetchColumn() ?: 1040);
+                $nextCode = 'CR-' . (max($maxNum, 1040) + 1);
 
                 $stmt = $pdo->prepare("
                     INSERT INTO `complaints` 
@@ -506,8 +498,6 @@ $flash = get_flash();
       </div>
     </div>
 
-    <?php require __DIR__ . '/../includes/footer.php'; ?>
-
     <!-- Progressive enhancement script for file picker and draft management -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -631,5 +621,5 @@ $flash = get_flash();
         }
       });
     </script>
-  </body>
-</html>
+
+    <?php require __DIR__ . '/../includes/footer.php'; ?>
